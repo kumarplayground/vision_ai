@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 import { login } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
@@ -27,30 +26,31 @@ function SubmitButton() {
 
 export function LoginForm() {
   const [state, formAction] = useFormState(login, initialState);
-  const [password, setPassword] = useState('');
-
-  const handleAction = () => {
-    formAction(password);
-  }
 
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
         <CardTitle className="text-2xl">Admin Login</CardTitle>
         <CardDescription>
-          Enter your password to access the admin panel.
+          Enter your credentials to access the admin panel.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form action={handleAction} className="space-y-4">
+        <form action={formAction} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="userId">User ID</Label>
+            <Input 
+              id="userId" 
+              name="userId"
+              required 
+            />
+          </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
             <Input 
               id="password" 
               type="password" 
               name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
               required 
             />
           </div>

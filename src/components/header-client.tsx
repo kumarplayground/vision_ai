@@ -25,14 +25,14 @@ interface HeaderClientProps {
 
 export function HeaderClient({ navLinks }: HeaderClientProps) {
   const pathname = usePathname();
-  const isAdminRoute = pathname.startsWith("/admin");
+  const isAdminLoginPage = pathname === "/admin/login";
 
   return (
     <header
       className={cn(
         "sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
         {
-          hidden: isAdminRoute,
+          "hidden": isAdminLoginPage
         }
       )}
     >

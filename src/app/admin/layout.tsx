@@ -3,6 +3,7 @@ import {
   Briefcase,
   BookOpen,
   LayoutDashboard,
+  LogOut,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -19,6 +20,8 @@ import {
   SidebarFooter,
 } from "@/components/ui/sidebar";
 import { Header } from "@/components/header";
+import { logout } from "@/lib/auth";
+import { Button } from "@/components/ui/button";
 
 const menuItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -54,7 +57,13 @@ export default async function AdminLayout({ children }: { children: ReactNode })
                 ))}
               </SidebarMenu>
             </SidebarContent>
-            <SidebarFooter>
+            <SidebarFooter className="flex-col !gap-4 !p-4">
+               <form action={logout}>
+                  <Button variant="outline" className="w-full justify-start">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Logout</span>
+                  </Button>
+                </form>
               <SidebarTrigger />
             </SidebarFooter>
           </Sidebar>

@@ -3,11 +3,15 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 const AUTH_COOKIE_NAME = 'admin_auth';
+const ADMIN_USERID = process.env.ADMIN_USERID || 'admin';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'password';
 
-export async function login(password: string): Promise<{ error?: string }> {
-  if (password !== ADMIN_PASSWORD) {
-    return { error: 'Invalid password.' };
+export async function login(formData: FormData): Promise<{ error?: string }> {
+  const userId = formData.get('userId') as string;
+  const password = formData.get('password') as string;
+
+  if (userId !== ADMIN_USERID || password !== ADMIN_PASSWORD) {
+    return { error: 'Invalid User ID or password.' };
   }
 
   const cookieStore = cookies();
