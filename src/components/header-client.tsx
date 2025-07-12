@@ -58,10 +58,10 @@ export function HeaderClient({ navLinks }: HeaderClientProps) {
               </Link>
             ))}
              <Button asChild variant="outline" size="sm">
-                <a href="/#/admin-login" target="_blank">
+                <Link href="/admin/login">
                     Admin Login
                     <LogIn className="ml-2 h-4 w-4" />
-                </a>
+                </Link>
             </Button>
           </nav>
         </div>
@@ -98,9 +98,9 @@ export function HeaderClient({ navLinks }: HeaderClientProps) {
                     </SheetClose>
                   ))}
                   <SheetClose asChild>
-                     <a href="/#/admin-login" target="_blank" className="text-lg font-medium text-foreground/60 transition-colors hover:text-foreground/80 flex items-center gap-2">
+                     <Link href="/admin/login" className="text-lg font-medium text-foreground/60 transition-colors hover:text-foreground/80 flex items-center gap-2">
                         Admin Login <LogIn className="h-5 w-5" />
-                    </a>
+                    </Link>
                   </SheetClose>
                 </nav>
               </div>
