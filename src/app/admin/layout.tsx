@@ -44,14 +44,13 @@ export default async function AdminLayout({ children }: { children: ReactNode })
                 {menuItems.map((item) => (
                   <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton
-                      href={item.href}
                       asChild
                       tooltip={{ children: item.label }}
                     >
-                      <a href={item.href}>
+                      <Link href={item.href}>
                         <item.icon />
                         <span>{item.label}</span>
-                      </a>
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
