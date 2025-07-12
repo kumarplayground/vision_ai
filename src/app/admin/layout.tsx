@@ -3,10 +3,8 @@ import {
   Briefcase,
   BookOpen,
   LayoutDashboard,
-  LogOut,
 } from "lucide-react";
 import Link from "next/link";
-import { redirect } from 'next/navigation';
 
 import {
   SidebarProvider,
@@ -21,8 +19,6 @@ import {
   SidebarFooter,
 } from "@/components/ui/sidebar";
 import { Header } from "@/components/header";
-import { checkAuth, logout } from "@/lib/auth";
-import { Button } from "@/components/ui/button";
 
 const menuItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -31,12 +27,6 @@ const menuItems = [
 ];
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
-  const isAuthenticated = await checkAuth();
-
-  if (!isAuthenticated) {
-    redirect('/admin/login');
-  }
-
   return (
     <SidebarProvider>
       <div className="relative flex min-h-dvh flex-col bg-background">
@@ -64,14 +54,8 @@ export default async function AdminLayout({ children }: { children: ReactNode })
                 ))}
               </SidebarMenu>
             </SidebarContent>
-            <SidebarFooter className="flex-col items-start gap-2 p-2">
-               <form action={logout} className="w-full">
-                  <Button variant="ghost" className="w-full justify-start">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Logout
-                  </Button>
-                </form>
-                <SidebarTrigger />
+            <SidebarFooter>
+              <SidebarTrigger />
             </SidebarFooter>
           </Sidebar>
           <SidebarInset>{children}</SidebarInset>

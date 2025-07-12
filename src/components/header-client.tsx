@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Briefcase, Menu, LogIn } from "lucide-react";
+import { Briefcase, Menu, UserCog } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "./theme-toggle";
@@ -58,9 +58,9 @@ export function HeaderClient({ navLinks }: HeaderClientProps) {
               </Link>
             ))}
              <Button asChild variant="outline" size="sm">
-                <Link href="/admin/login">
-                    Admin Login
-                    <LogIn className="ml-2 h-4 w-4" />
+                <Link href="/admin">
+                    Admin
+                    <UserCog className="ml-2 h-4 w-4" />
                 </Link>
             </Button>
           </nav>
@@ -98,8 +98,8 @@ export function HeaderClient({ navLinks }: HeaderClientProps) {
                     </SheetClose>
                   ))}
                   <SheetClose asChild>
-                     <Link href="/admin/login" className="text-lg font-medium text-foreground/60 transition-colors hover:text-foreground/80 flex items-center gap-2">
-                        Admin Login <LogIn className="h-5 w-5" />
+                     <Link href="/admin" className="text-lg font-medium text-foreground/60 transition-colors hover:text-foreground/80 flex items-center gap-2">
+                        Admin <UserCog className="h-5 w-5" />
                     </Link>
                   </SheetClose>
                 </nav>
