@@ -6,7 +6,10 @@ const AUTH_COOKIE_NAME = 'admin_auth';
 const ADMIN_USERID = process.env.ADMIN_USERID || 'admin';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'password';
 
-export async function login(formData: FormData): Promise<{ error?: string }> {
+export async function login(
+  prevState: { error?: string } | undefined,
+  formData: FormData
+): Promise<{ error?: string }> {
   const userId = formData.get('userId') as string;
   const password = formData.get('password') as string;
 
