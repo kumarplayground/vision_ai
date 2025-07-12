@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
-import { Header } from "@/components/header";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -37,10 +36,7 @@ export default function RootLayout({
         )}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className="relative flex min-h-dvh flex-col bg-background">
-            <Header />
-            <main className="flex-1">{children}</main>
-          </div>
+          {children}
         </ThemeProvider>
         <Toaster />
       </body>

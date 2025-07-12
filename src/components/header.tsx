@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Briefcase, Menu } from "lucide-react";
+import { Briefcase, Menu, Shield } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "./theme-toggle";
@@ -13,6 +13,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { Button } from "./ui/button";
+import { Badge } from "./ui/badge";
 
 const navLinks = [
   { href: "/jobs", label: "Jobs" },
@@ -22,8 +23,12 @@ const navLinks = [
 export function Header() {
   const pathname = usePathname();
 
+  const isAdminRoute = pathname.startsWith('/admin');
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className={cn("sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60", {
+        'hidden': isAdminRoute
+    })}>
       <div className="container flex h-14 items-center">
         <div className="mr-4 hidden md:flex">
           <Link href="/" className="mr-6 flex items-center space-x-2">
@@ -45,6 +50,16 @@ export function Header() {
                 {label}
               </Link>
             ))}
+             <Link
+                href="/admin"
+                className={cn(
+                  "transition-colors hover:text-foreground/80 flex items-center gap-1",
+                  pathname.startsWith('/admin') ? "text-foreground" : "text-foreground/60"
+                )}
+              >
+                Admin 
+                <Shield className="h-4 w-4" />
+              </Link>
           </nav>
         </div>
 
@@ -79,6 +94,19 @@ export function Header() {
                       </Link>
                     </SheetClose>
                   ))}
+                   <SheetClose asChild>
+                     <Link
+                        href="/admin"
+                        className={cn(
+                          "text-lg font-medium transition-colors hover:text-foreground/80 flex items-center gap-2",
+                           pathname.startsWith('/admin')
+                            ? "text-foreground"
+                            : "text-foreground/60"
+                        )}
+                      >
+                        Admin <Shield className="h-5 w-5" />
+                      </Link>
+                    </SheetClose>
                 </nav>
               </div>
             </SheetContent>
