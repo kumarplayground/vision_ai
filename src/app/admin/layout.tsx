@@ -3,7 +3,9 @@ import {
   Briefcase,
   BookOpen,
   LayoutDashboard,
+  LogOut,
 } from "lucide-react";
+import { logout } from "@/lib/actions";
 
 import {
   SidebarProvider,
@@ -18,12 +20,24 @@ import {
   SidebarFooter,
 } from "@/components/ui/sidebar";
 import { Header } from "@/components/header";
+import { Button } from "@/components/ui/button";
 
 const menuItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/jobs", label: "Jobs", icon: Briefcase },
   { href: "/admin/courses", label: "Courses", icon: BookOpen },
 ];
+
+function LogoutButton() {
+    return (
+        <form action={logout} className="w-full">
+            <Button variant="ghost" className="w-full justify-start gap-2 px-2">
+                <LogOut />
+                <span>Logout</span>
+            </Button>
+        </form>
+    )
+}
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
@@ -53,7 +67,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 ))}
               </SidebarMenu>
             </SidebarContent>
-            <SidebarFooter>
+            <SidebarFooter className="flex-col items-start gap-2 p-2">
+                <LogoutButton />
                 <SidebarTrigger />
             </SidebarFooter>
           </Sidebar>
