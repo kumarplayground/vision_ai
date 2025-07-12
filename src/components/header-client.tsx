@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Briefcase, Menu, LogIn, Shield } from "lucide-react";
+import { Briefcase, Menu, LogIn } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "./theme-toggle";
@@ -20,17 +20,12 @@ interface NavLink {
 }
 
 interface HeaderClientProps {
-    isLoggedIn: boolean;
     navLinks: NavLink[];
 }
 
-export function HeaderClient({ isLoggedIn, navLinks }: HeaderClientProps) {
+export function HeaderClient({ navLinks }: HeaderClientProps) {
   const pathname = usePathname();
   const isAdminRoute = pathname.startsWith("/admin");
-
-  const adminLinkHref = isLoggedIn ? "/admin" : "/login";
-  const adminLinkLabel = isLoggedIn ? "Admin" : "Login";
-  const AdminLinkIcon = isLoggedIn ? Shield : LogIn;
 
   return (
     <header
@@ -62,18 +57,12 @@ export function HeaderClient({ isLoggedIn, navLinks }: HeaderClientProps) {
                 {label}
               </Link>
             ))}
-            <Link
-              href={adminLinkHref}
-              className={cn(
-                "transition-colors hover:text-foreground/80 flex items-center gap-1",
-                pathname.startsWith("/admin") || pathname === "/login"
-                  ? "text-foreground"
-                  : "text-foreground/60"
-              )}
-            >
-              {adminLinkLabel}
-              <AdminLinkIcon className="h-4 w-4" />
-            </Link>
+             <Button asChild variant="outline" size="sm">
+                <a href="/#/admin-login" target="_blank">
+                    Admin Login
+                    <LogIn className="ml-2 h-4 w-4" />
+                </a>
+            </Button>
           </nav>
         </div>
 
@@ -109,17 +98,9 @@ export function HeaderClient({ isLoggedIn, navLinks }: HeaderClientProps) {
                     </SheetClose>
                   ))}
                   <SheetClose asChild>
-                    <Link
-                      href={adminLinkHref}
-                      className={cn(
-                        "text-lg font-medium transition-colors hover:text-foreground/80 flex items-center gap-2",
-                        pathname.startsWith("/admin") || pathname === "/login"
-                          ? "text-foreground"
-                          : "text-foreground/60"
-                      )}
-                    >
-                      {adminLinkLabel} <AdminLinkIcon className="h-5 w-5" />
-                    </Link>
+                     <a href="/#/admin-login" target="_blank" className="text-lg font-medium text-foreground/60 transition-colors hover:text-foreground/80 flex items-center gap-2">
+                        Admin Login <LogIn className="h-5 w-5" />
+                    </a>
                   </SheetClose>
                 </nav>
               </div>
