@@ -2,6 +2,7 @@ import { jobs } from "@/lib/data";
 import { JobsTable } from "@/components/admin/jobs-table";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
+import Link from "next/link";
 
 export default function AdminJobsPage() {
   return (
@@ -13,9 +14,11 @@ export default function AdminJobsPage() {
             Here you can add, edit, or delete job postings.
           </p>
         </div>
-        <Button>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Add New Job
+        <Button asChild>
+          <Link href="/admin/jobs/new">
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add New Job
+          </Link>
         </Button>
       </div>
       <div className="mt-8">
