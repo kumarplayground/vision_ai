@@ -104,6 +104,13 @@ export const jobs: Job[] = [
 
 export const courses: Course[] = [
   {
+    "id": "1752384222062",
+    "title": "UI/UX Design Fundamentals",
+    "description": "Learn the principles of great design. Master Figma and create beautiful, user-friendly interfaces.",
+    "thumbnail": "https://www.istockphoto.com/photo/website-designer-creative-planning-phone-app-development-template-layout-framework-gm1268172253-372184418?utm_source=pixabay&utm_medium=affiliate&utm_campaign=sponsored_image&utm_content=srp_topbannerNone_media&utm_term=ui+ux",
+    "buyLink": "https://www.instamojo.com/sell-courses-online/"
+  },
+  {
     "id": "1752383784424",
     "title": "Advanced Node.js and Express",
     "description": "Deep dive into backend development with Node.js. Build scalable APIs and understand the Express framework inside-out.",
