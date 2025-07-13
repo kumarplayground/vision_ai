@@ -1,33 +1,40 @@
-"use server";
+'use server';
 
-import { revalidatePath } from "next/cache";
-import { z } from "zod";
-import { jobs } from "./data";
-import { summarizeJobDescription } from "@/ai/flows/job-description-summarizer";
+import {revalidatePath} from 'next/cache';
+import {z} from 'zod';
+import {jobs} from './data';
+import type {Job} from '@/types';
+import fs from 'fs/promises';
+import path from 'path';
 
 export async function getJobSummary(
   description: string
-): Promise<{ summary?: string; error?: string }> {
+): Promise<{summary?: string; error?: string}> {
   if (!description) {
-    return { error: "Job description is empty." };
+    return {error: 'Job description is empty.'};
   }
 
   try {
+    const {summarizeJobDescription} = await import(
+      '@/ai/flows/job-description-summarizer'
+    );
     const result = await summarizeJobDescription({
       jobDescription: description,
     });
-    return { summary: result.summary };
+    return {summary: result.summary};
   } catch (e) {
     console.error(e);
-    return { error: "Failed to generate summary. Please try again." };
+    return {error: 'Failed to generate summary. Please try again.'};
   }
 }
 
 const JobSchema = z.object({
-  title: z.string().min(3, "Title must be at least 3 characters long."),
-  company: z.string().min(2, "Company must be at least 2 characters long."),
-  location: z.string().min(2, "Location must be at least 2 characters long."),
-  description: z.string().min(10, "Description must be at least 10 characters long."),
+  title: z.string().min(3, 'Title must be at least 3 characters long.'),
+  company: z.string().min(2, 'Company must be at least 2 characters long.'),
+  location: z.string().min(2, 'Location must be at least 2 characters long.'),
+  description: z
+    .string()
+    .min(10, 'Description must be at least 10 characters long.'),
 });
 
 type FormState = {
@@ -38,42 +45,60 @@ type FormState = {
     location?: string[];
     description?: string[];
   } | null;
+};
+
+async function saveJobs(newJobs: Job[]) {
+  const dataPath = path.join(process.cwd(), 'src', 'lib', 'data.ts');
+  const fileContent = await fs.readFile(dataPath, 'utf8');
+
+  const newJobsString = JSON.stringify(newJobs, null, 2);
+  const updatedFileContent = fileContent.replace(
+    /export const jobs: Job\[] = \[[\s\S]*?];/,
+    `export const jobs: Job[] = ${newJobsString};`
+  );
+
+  await fs.writeFile(dataPath, updatedFileContent, 'utf8');
 }
 
-export async function createJob(prevState: FormState, formData: FormData): Promise<FormState> {
+export async function createJob(
+  prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
   const validatedFields = JobSchema.safeParse({
-    title: formData.get("title"),
-    company: formData.get("company"),
-    location: formData.get("location"),
-    description: formData.get("description"),
+    title: formData.get('title'),
+    company: formData.get('company'),
+    location: formData.get('location'),
+    description: formData.get('description'),
   });
 
   if (!validatedFields.success) {
     return {
-      message: "Validation failed. Please check your input.",
+      message: 'Validation failed. Please check your input.',
       errors: validatedFields.error.flatten().fieldErrors,
     };
   }
 
   try {
-    const newJob = {
+    const newJob: Job = {
       id: String(Date.now()),
       ...validatedFields.data,
-      postedAt: "Just now",
-      applyLink: "#",
+      postedAt: 'Just now',
+      applyLink: '#',
     };
 
-    // Add the new job to the beginning of the array
-    jobs.unshift(newJob);
+    const newJobs = [newJob, ...jobs];
+    await saveJobs(newJobs);
 
-    revalidatePath("/");
-    revalidatePath("/jobs");
-    revalidatePath("/admin/jobs");
+    revalidatePath('/');
+    revalidatePath('/jobs');
+    revalidatePath('/admin/jobs');
 
-    return { message: "success" };
-
+    return {message: 'success'};
   } catch (error) {
-    console.error("Failed to create job:", error);
-    return { message: "An unexpected error occurred. Please try again.", errors: null };
+    console.error('Failed to create job:', error);
+    return {
+      message: 'An unexpected error occurred. Please try again.',
+      errors: null,
+    };
   }
 }
