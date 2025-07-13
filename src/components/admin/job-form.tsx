@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
 import { createJob } from "@/lib/actions";
@@ -32,9 +32,11 @@ export function JobForm() {
   const [state, formAction] = useActionState(createJob, initialState);
   const router = useRouter();
 
-  if (state.message === 'success') {
-    router.push('/admin/jobs');
-  }
+  useEffect(() => {
+    if (state.message === 'success') {
+      router.push('/admin/jobs');
+    }
+  }, [state.message, router]);
 
   return (
     <form action={formAction}>
