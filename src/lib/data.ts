@@ -104,6 +104,27 @@ export const jobs: Job[] = [
 
 export const courses: Course[] = [
   {
+    "id": "1752383784424",
+    "title": "Advanced Node.js and Express",
+    "description": "Deep dive into backend development with Node.js. Build scalable APIs and understand the Express framework inside-out.",
+    "thumbnail": "https://images.pexels.com/photos/1181555/pexels-photo-1181555.jpeg?_gl=1*1t56an5*_ga*NzA3MzgwMjMxLjE3NTIzODI1NTg.*_ga_8JE65Q40S6*czE3NTIzODI1NTckbzEkZzEkdDE3NTIzODM3NTAkajUxJGwwJGgw",
+    "buyLink": "https://www.instamojo.com/sell-courses-online/"
+  },
+  {
+    "id": "1752383633124",
+    "title": "Advanced Node.js and Express",
+    "description": "Deep dive into backend development with Node.js. Build scalable APIs and understand the Express framework inside-out.",
+    "thumbnail": "https://media.istockphoto.com/id/599104836/photo/increasing-her-efforts-to-maximise-her-success.jpg?b=1&s=612x612&w=0&k=20&c=y8DeeMNsz8qN3CJYRT_-gQSXjNFxhzGnIspe7MUl5O0=",
+    "buyLink": "https://www.instamojo.com/sell-courses-online/"
+  },
+  {
+    "id": "1752383496660",
+    "title": "The Complete React Mastery",
+    "description": "Go from beginner to advanced with React. Learn hooks, context, Redux, and more in this comprehensive course.",
+    "thumbnail": "https://cdn.pixabay.com/photo/2025/01/01/12/20/technology-9303676_640.jpg",
+    "buyLink": "https://www.instamojo.com/sell-courses-online/"
+  },
+  {
     "id": "1752382979518",
     "title": "flipkart interview ",
     "description": "you can prepare yourself with sample question and answers ",
