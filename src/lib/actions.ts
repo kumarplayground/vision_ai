@@ -180,3 +180,65 @@ export async function createCourse(
     };
   }
 }
+
+export async function updateCourse(
+  prevState: CourseFormState,
+  formData: FormData
+): Promise<CourseFormState> {
+  const id = formData.get('id') as string;
+  if (!id) {
+    return { message: 'Course ID is missing.', errors: null };
+  }
+
+  const validatedFields = CourseSchema.safeParse({
+    title: formData.get('title'),
+    description: formData.get('description'),
+    thumbnail: formData.get('thumbnail'),
+    buyLink: formData.get('buyLink'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      message: 'Validation failed. Please check your input.',
+      errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  try {
+    const updatedCourses = courses.map((course) =>
+      course.id === id ? { ...course, ...validatedFields.data } : course
+    );
+
+    await saveCourses(updatedCourses);
+
+    revalidatePath('/');
+    revalidatePath('/courses');
+    revalidatePath('/admin/courses');
+
+    return { message: 'success' };
+  } catch (error) {
+    console.error('Failed to update course:', error);
+    return {
+      message: 'An unexpected error occurred. Please try again.',
+      errors: null,
+    };
+  }
+}
+
+export async function deleteCourse(
+  courseId: string
+): Promise<{ success: boolean; message: string }> {
+  try {
+    const updatedCourses = courses.filter((course) => course.id !== courseId);
+    await saveCourses(updatedCourses);
+
+    revalidatePath('/');
+    revalidatePath('/courses');
+    revalidatePath('/admin/courses');
+
+    return { success: true, message: 'Course deleted successfully.' };
+  } catch (error) {
+    console.error('Failed to delete course:', error);
+    return { success: false, message: 'An unexpected error occurred.' };
+  }
+}
