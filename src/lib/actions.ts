@@ -35,6 +35,7 @@ const JobSchema = z.object({
   description: z
     .string()
     .min(10, 'Description must be at least 10 characters long.'),
+  applyLink: z.string().url('Please enter a valid URL.'),
 });
 
 type FormState = {
@@ -44,6 +45,7 @@ type FormState = {
     company?: string[];
     location?: string[];
     description?: string[];
+    applyLink?: string[];
   } | null;
 };
 
@@ -70,6 +72,7 @@ export async function createJob(
     company: formData.get('company'),
     location: formData.get('location'),
     description: formData.get('description'),
+    applyLink: formData.get('applyLink'),
   });
 
   if (!validatedFields.success) {
@@ -84,7 +87,6 @@ export async function createJob(
       id: String(Date.now()),
       ...validatedFields.data,
       postedAt: 'Just now',
-      applyLink: '#',
     };
 
     const newJobs = [newJob, ...jobs];
@@ -103,6 +105,70 @@ export async function createJob(
     };
   }
 }
+
+export async function updateJob(
+  prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const id = formData.get('id') as string;
+  if (!id) {
+    return { message: 'Job ID is missing.', errors: null };
+  }
+
+  const validatedFields = JobSchema.safeParse({
+    title: formData.get('title'),
+    company: formData.get('company'),
+    location: formData.get('location'),
+    description: formData.get('description'),
+    applyLink: formData.get('applyLink'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      message: 'Validation failed. Please check your input.',
+      errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  try {
+    const updatedJobs = jobs.map((job) =>
+      job.id === id ? { ...job, ...validatedFields.data } : job
+    );
+
+    await saveJobs(updatedJobs);
+
+    revalidatePath('/');
+    revalidatePath('/jobs');
+    revalidatePath('/admin/jobs');
+
+    return { message: 'success' };
+  } catch (error) {
+    console.error('Failed to update job:', error);
+    return {
+      message: 'An unexpected error occurred. Please try again.',
+      errors: null,
+    };
+  }
+}
+
+export async function deleteJob(
+  jobId: string
+): Promise<{ success: boolean; message: string }> {
+  try {
+    const updatedJobs = jobs.filter((job) => job.id !== jobId);
+    await saveJobs(updatedJobs);
+
+    revalidatePath('/');
+    revalidatePath('/jobs');
+    revalidatePath('/admin/jobs');
+
+    return { success: true, message: 'Job deleted successfully.' };
+  } catch (error) {
+    console.error('Failed to delete job:', error);
+    return { success: false, message: 'An unexpected error occurred.' };
+  }
+}
+
 
 const CourseSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters long.'),
