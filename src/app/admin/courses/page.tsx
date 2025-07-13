@@ -2,6 +2,7 @@ import { courses } from "@/lib/data";
 import { CoursesTable } from "@/components/admin/courses-table";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
+import Link from "next/link";
 
 export default function AdminCoursesPage() {
   return (
@@ -13,9 +14,11 @@ export default function AdminCoursesPage() {
             Here you can add, edit, or delete courses.
           </p>
         </div>
-        <Button>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Add New Course
+        <Button asChild>
+          <Link href="/admin/courses/new">
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add New Course
+          </Link>
         </Button>
       </div>
       <div className="mt-8">

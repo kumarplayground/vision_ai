@@ -2,8 +2,8 @@
 
 import {revalidatePath} from 'next/cache';
 import {z} from 'zod';
-import {jobs} from './data';
-import type {Job} from '@/types';
+import {jobs, courses} from './data';
+import type {Job, Course} from '@/types';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -52,9 +52,10 @@ async function saveJobs(newJobs: Job[]) {
   const fileContent = await fs.readFile(dataPath, 'utf8');
 
   const newJobsString = JSON.stringify(newJobs, null, 2);
+  
   const updatedFileContent = fileContent.replace(
-    /export const jobs: Job\[] = \[[\s\S]*?];/,
-    `export const jobs: Job[] = ${newJobsString};`
+    /(export const jobs: Job\[] = )\[[\s\S]*?];/,
+    `$1${newJobsString};`
   );
 
   await fs.writeFile(dataPath, updatedFileContent, 'utf8');
@@ -96,6 +97,77 @@ export async function createJob(
     return {message: 'success'};
   } catch (error) {
     console.error('Failed to create job:', error);
+    return {
+      message: 'An unexpected error occurred. Please try again.',
+      errors: null,
+    };
+  }
+}
+
+const CourseSchema = z.object({
+  title: z.string().min(3, 'Title must be at least 3 characters long.'),
+  description: z
+    .string()
+    .min(10, 'Description must be at least 10 characters long.'),
+});
+
+type CourseFormState = {
+  message: string;
+  errors?: {
+    title?: string[];
+    description?: string[];
+  } | null;
+};
+
+async function saveCourses(newCourses: Course[]) {
+  const dataPath = path.join(process.cwd(), 'src', 'lib', 'data.ts');
+  const fileContent = await fs.readFile(dataPath, 'utf8');
+
+  const newCoursesString = JSON.stringify(newCourses, null, 2);
+
+  const updatedFileContent = fileContent.replace(
+    /(export const courses: Course\[] = )\[[\s\S]*?];/,
+    `$1${newCoursesString};`
+  );
+
+  await fs.writeFile(dataPath, updatedFileContent, 'utf8');
+}
+
+
+export async function createCourse(
+  prevState: CourseFormState,
+  formData: FormData
+): Promise<CourseFormState> {
+  const validatedFields = CourseSchema.safeParse({
+    title: formData.get('title'),
+    description: formData.get('description'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      message: 'Validation failed. Please check your input.',
+      errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  try {
+    const newCourse: Course = {
+      id: String(Date.now()),
+      ...validatedFields.data,
+      thumbnail: 'https://placehold.co/600x400',
+      buyLink: '#',
+    };
+
+    const newCourses = [newCourse, ...courses];
+    await saveCourses(newCourses);
+
+    revalidatePath('/');
+    revalidatePath('/courses');
+    revalidatePath('/admin/courses');
+
+    return {message: 'success'};
+  } catch (error) {
+    console.error('Failed to create course:', error);
     return {
       message: 'An unexpected error occurred. Please try again.',
       errors: null,
