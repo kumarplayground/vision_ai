@@ -104,6 +104,13 @@ export const jobs: Job[] = [
 
 export const courses: Course[] = [
   {
+    "id": "1752382979518",
+    "title": "flipkart interview ",
+    "description": "you can prepare yourself with sample question and answers ",
+    "thumbnail": "https://cdn.pixabay.com/photo/2022/01/28/12/17/distance-learning-6974511_1280.jpg",
+    "buyLink": "https://www.instamojo.com/sell-courses-online/"
+  },
+  {
     "id": "1752382710684",
     "title": "Amazon sample",
     "description": "amazon is hiring vcs you can preparire sample questions with answer ",
