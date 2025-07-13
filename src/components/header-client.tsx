@@ -41,7 +41,7 @@ export function HeaderClient({ navLinks }: HeaderClientProps) {
           <Link href="/" className="mr-6 flex items-center space-x-2">
             <Briefcase className="h-6 w-6 text-primary" />
             <span className="hidden font-bold sm:inline-block">
-              CareerPath Navigator
+              CareerJugaad
             </span>
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
@@ -79,7 +79,7 @@ export function HeaderClient({ navLinks }: HeaderClientProps) {
               <div className="flex flex-col gap-6 p-4">
                 <Link href="/" className="flex items-center space-x-2">
                   <Briefcase className="h-6 w-6 text-primary" />
-                  <span className="font-bold">CareerPath Navigator</span>
+                  <span className="font-bold">CareerJugaad</span>
                 </Link>
                 <nav className="flex flex-col gap-4">
                   {navLinks.map(({ href, label }) => (

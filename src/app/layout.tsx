@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CareerPath Navigator",
+  title: "Career Jugaad",
   description:
     "Your guide to the next step in your career. Find jobs and courses to boost your skills.",
 };
