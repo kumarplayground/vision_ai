@@ -109,7 +109,9 @@ const CourseSchema = z.object({
   description: z
     .string()
     .min(10, 'Description must be at least 10 characters long.'),
-  thumbnail: z.string().url('Please enter a valid URL.'),
+  thumbnail: z.string().refine(val => val.startsWith('http') || val.startsWith('data:image'), {
+    message: 'Please enter a valid URL or upload an image.'
+  }),
   buyLink: z.string().url('Please enter a valid URL.'),
 });
 

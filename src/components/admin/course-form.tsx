@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
 import { createCourse } from "@/lib/actions";
@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { AlertCircle, LoaderCircle } from "lucide-react";
 
 const initialState = {
@@ -31,12 +32,25 @@ function SubmitButton() {
 export function CourseForm() {
   const [state, formAction] = useActionState(createCourse, initialState);
   const router = useRouter();
+  const [thumbnailType, setThumbnailType] = useState<"url" | "upload">("url");
+  const [thumbnailValue, setThumbnailValue] = useState("");
 
   useEffect(() => {
     if (state.message === 'success') {
       router.push('/admin/courses');
     }
   }, [state.message, router]);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setThumbnailValue(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   return (
     <form action={formAction}>
@@ -61,9 +75,42 @@ export function CourseForm() {
               <p className="text-sm text-destructive">{state.errors.description[0]}</p>
             )}
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="thumbnail">Thumbnail URL</Label>
-            <Input id="thumbnail" name="thumbnail" placeholder="https://placehold.co/600x400" required />
+          <div className="space-y-4">
+            <Label>Thumbnail</Label>
+            <RadioGroup
+              defaultValue="url"
+              onValueChange={(value: "url" | "upload") => setThumbnailType(value)}
+              className="flex gap-4"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="url" id="url" />
+                <Label htmlFor="url">URL</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="upload" id="upload" />
+                <Label htmlFor="upload">Upload</Label>
+              </div>
+            </RadioGroup>
+            {thumbnailType === "url" ? (
+              <Input 
+                id="thumbnail" 
+                name="thumbnail" 
+                placeholder="https://placehold.co/600x400" 
+                required 
+                onChange={(e) => setThumbnailValue(e.target.value)}
+                value={thumbnailValue}
+              />
+            ) : (
+              <Input 
+                type="file" 
+                id="thumbnail-file" 
+                name="thumbnail-file"
+                accept="image/*"
+                required
+                onChange={handleFileChange}
+              />
+            )}
+            <input type="hidden" name="thumbnail" value={thumbnailValue} />
             {state.errors?.thumbnail && (
               <p className="text-sm text-destructive">{state.errors.thumbnail[0]}</p>
             )}
