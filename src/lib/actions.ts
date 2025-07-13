@@ -109,6 +109,8 @@ const CourseSchema = z.object({
   description: z
     .string()
     .min(10, 'Description must be at least 10 characters long.'),
+  thumbnail: z.string().url('Please enter a valid URL.'),
+  buyLink: z.string().url('Please enter a valid URL.'),
 });
 
 type CourseFormState = {
@@ -116,6 +118,8 @@ type CourseFormState = {
   errors?: {
     title?: string[];
     description?: string[];
+    thumbnail?: string[];
+    buyLink?: string[];
   } | null;
 };
 
@@ -141,6 +145,8 @@ export async function createCourse(
   const validatedFields = CourseSchema.safeParse({
     title: formData.get('title'),
     description: formData.get('description'),
+    thumbnail: formData.get('thumbnail'),
+    buyLink: formData.get('buyLink'),
   });
 
   if (!validatedFields.success) {
@@ -154,8 +160,6 @@ export async function createCourse(
     const newCourse: Course = {
       id: String(Date.now()),
       ...validatedFields.data,
-      thumbnail: 'https://placehold.co/600x400',
-      buyLink: '#',
     };
 
     const newCourses = [newCourse, ...courses];

@@ -37,10 +37,10 @@ export function CourseCard({ course }: CourseCardProps) {
       </CardContent>
       <CardFooter className="p-6 pt-0">
         <Button asChild className="w-full" variant="secondary">
-          <Link href={course.buyLink}>
+          <a href={course.buyLink} target="_blank" rel="noopener noreferrer">
             Buy Now
             <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
+          </a>
         </Button>
       </CardFooter>
     </Card>

@@ -54,11 +54,25 @@ export function CourseForm() {
             <Textarea
               id="description"
               name="description"
-              rows={8}
+              rows={5}
               required
             />
              {state.errors?.description && (
               <p className="text-sm text-destructive">{state.errors.description[0]}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="thumbnail">Thumbnail URL</Label>
+            <Input id="thumbnail" name="thumbnail" placeholder="https://placehold.co/600x400" required />
+            {state.errors?.thumbnail && (
+              <p className="text-sm text-destructive">{state.errors.thumbnail[0]}</p>
+            )}
+          </div>
+           <div className="space-y-2">
+            <Label htmlFor="buyLink">Course Link</Label>
+            <Input id="buyLink" name="buyLink" placeholder="https://example.com/course" required />
+            {state.errors?.buyLink && (
+              <p className="text-sm text-destructive">{state.errors.buyLink[0]}</p>
             )}
           </div>
           {state.message && state.message !== 'success' && (

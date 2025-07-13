@@ -104,45 +104,52 @@ export const jobs: Job[] = [
 
 export const courses: Course[] = [
   {
-    id: "1",
-    title: "The Complete React Mastery",
-    description: "Go from beginner to advanced with React. Learn hooks, context, Redux, and more in this comprehensive course.",
-    thumbnail: "https://placehold.co/600x400",
-    buyLink: "#",
+    "id": "1752382710684",
+    "title": "Amazon sample",
+    "description": "amazon is hiring vcs you can preparire sample questions with answer ",
+    "thumbnail": "https://placehold.co/600x400",
+    "buyLink": "#"
   },
   {
-    id: "2",
-    title: "Advanced Node.js and Express",
-    description: "Deep dive into backend development with Node.js. Build scalable APIs and understand the Express framework inside-out.",
-    thumbnail: "https://placehold.co/600x400",
-    buyLink: "#",
+    "id": "1",
+    "title": "The Complete React Mastery",
+    "description": "Go from beginner to advanced with React. Learn hooks, context, Redux, and more in this comprehensive course.",
+    "thumbnail": "https://placehold.co/600x400",
+    "buyLink": "#"
   },
   {
-    id: "3",
-    title: "UI/UX Design Fundamentals",
-    description: "Learn the principles of great design. Master Figma and create beautiful, user-friendly interfaces.",
-    thumbnail: "https://placehold.co/600x400",
-    buyLink: "#",
+    "id": "2",
+    "title": "Advanced Node.js and Express",
+    "description": "Deep dive into backend development with Node.js. Build scalable APIs and understand the Express framework inside-out.",
+    "thumbnail": "https://placehold.co/600x400",
+    "buyLink": "#"
   },
   {
-    id: "4",
-    title: "Data Structures & Algorithms",
-    description: "Ace your coding interviews. A deep dive into essential data structures and algorithms with practical examples.",
-    thumbnail: "https://placehold.co/600x400",
-    buyLink: "#",
+    "id": "3",
+    "title": "UI/UX Design Fundamentals",
+    "description": "Learn the principles of great design. Master Figma and create beautiful, user-friendly interfaces.",
+    "thumbnail": "https://placehold.co/600x400",
+    "buyLink": "#"
   },
   {
-    id: "5",
-    title: "Introduction to Machine Learning",
-    description: "Understand the fundamentals of machine learning and build your first models using Python and popular libraries.",
-    thumbnail: "https://placehold.co/600x400",
-    buyLink: "#",
+    "id": "4",
+    "title": "Data Structures & Algorithms",
+    "description": "Ace your coding interviews. A deep dive into essential data structures and algorithms with practical examples.",
+    "thumbnail": "https://placehold.co/600x400",
+    "buyLink": "#"
   },
   {
-    id: "6",
-    title: "Mastering Next.js 14",
-    description: "Build full-stack, production-ready applications with the latest features of Next.js, including the App Router.",
-    thumbnail: "https://placehold.co/600x400",
-    buyLink: "#",
+    "id": "5",
+    "title": "Introduction to Machine Learning",
+    "description": "Understand the fundamentals of machine learning and build your first models using Python and popular libraries.",
+    "thumbnail": "https://placehold.co/600x400",
+    "buyLink": "#"
   },
+  {
+    "id": "6",
+    "title": "Mastering Next.js 14",
+    "description": "Build full-stack, production-ready applications with the latest features of Next.js, including the App Router.",
+    "thumbnail": "https://placehold.co/600x400",
+    "buyLink": "#"
+  }
 ];
