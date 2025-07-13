@@ -1,5 +1,6 @@
 import { JobCard } from "@/components/job-card";
 import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 import { jobs } from "@/lib/data";
 
 export default function JobsPage() {
@@ -24,6 +25,7 @@ export default function JobsPage() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

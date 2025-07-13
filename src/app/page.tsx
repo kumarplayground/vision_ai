@@ -5,6 +5,7 @@ import { CourseCard } from "@/components/course-card";
 import { JobCard } from "@/components/job-card";
 import { jobs, courses } from "@/lib/data";
 import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 
 export default function Home() {
   const latestJobs = jobs.slice(0, 3);
@@ -72,6 +73,7 @@ export default function Home() {
           </section>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

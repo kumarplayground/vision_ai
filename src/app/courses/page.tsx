@@ -1,5 +1,6 @@
 import { CourseCard } from "@/components/course-card";
 import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 import { courses } from "@/lib/data";
 
 export default function CoursesPage() {
@@ -24,6 +25,7 @@ export default function CoursesPage() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }
