@@ -18,7 +18,7 @@ export default function Home() {
           <section className="container mx-auto px-4 py-16 text-center sm:py-24">
             <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
               Navigate Your{" "}
-              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              <span className="inline-block bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 Career Path
               </span>
             </h1>
