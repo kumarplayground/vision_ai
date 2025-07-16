@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
+import { CldUploadButton } from "next-cloudinary";
 import { createJob, updateJob } from "@/lib/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,20 +11,14 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { AlertCircle, LoaderCircle } from "lucide-react";
+import { AlertCircle, LoaderCircle, UploadCloud } from "lucide-react";
 import type { Job } from "@/types";
+import Image from "next/image";
 
 const initialState = {
   message: "",
   errors: null,
 };
-
-function getInitialLogoType(logo?: string): "url" | "upload" {
-  if (!logo) return "url";
-  if (logo.startsWith("data:image")) return "upload";
-  return "url";
-}
 
 function SubmitButton({ isEditing }: { isEditing: boolean }) {
   const { pending } = useFormStatus();
@@ -42,9 +37,6 @@ export function JobForm({ job }: { job?: Job }) {
   const [state, formAction] = useActionState(action, initialState);
   const router = useRouter();
   
-  const [logoType, setLogoType] = useState<"url" | "upload">(
-    getInitialLogoType(job?.companyLogo)
-  );
   const [logoValue, setLogoValue] = useState(job?.companyLogo || "");
 
   useEffect(() => {
@@ -53,15 +45,8 @@ export function JobForm({ job }: { job?: Job }) {
     }
   }, [state.message, router]);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setLogoValue(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
+  const handleUploadSuccess = (result: any) => {
+    setLogoValue(result.info.secure_url);
   };
 
   return (
@@ -92,46 +77,37 @@ export function JobForm({ job }: { job?: Job }) {
               </p>
             )}
           </div>
-           <div className="space-y-4">
+           <div className="space-y-2">
             <Label>Company Logo</Label>
-            <RadioGroup
-              value={logoType}
-              onValueChange={(value: "url" | "upload") =>
-                setLogoType(value)
-              }
-              className="flex gap-4"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="url" id="url" />
-                <Label htmlFor="url">URL</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="upload" id="upload" />
-                <Label htmlFor="upload">Upload</Label>
-              </div>
-            </RadioGroup>
-            {logoType === "url" ? (
-              <Input
-                id="companyLogo-url"
-                name="companyLogo-url"
-                placeholder="https://placehold.co/100x100"
-                required={logoType === 'url'}
-                onChange={(e) => setLogoValue(e.target.value)}
-                value={logoValue.startsWith('data:image') ? '' : logoValue}
-                disabled={logoType !== 'url'}
-              />
-            ) : (
-              <Input
-                type="file"
-                id="companyLogo-file"
-                name="companyLogo-file"
-                accept="image/*"
-                required={logoType === 'upload' && !logoValue.startsWith('data:image')}
-                onChange={handleFileChange}
-                disabled={logoType !== 'upload'}
-              />
-            )}
-            <input type="hidden" name="companyLogo" value={logoValue} />
+             <div className="flex items-center gap-4">
+               <div className="w-full space-y-2">
+                 <Input
+                    name="companyLogo"
+                    placeholder="Enter image URL"
+                    value={logoValue}
+                    onChange={(e) => setLogoValue(e.target.value)}
+                  />
+                  <CldUploadButton
+                    onSuccess={handleUploadSuccess}
+                    uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
+                    className="w-full"
+                  >
+                    <Button type="button" variant="outline" className="w-full">
+                      <UploadCloud className="mr-2 h-4 w-4" />
+                      Upload from Computer
+                    </Button>
+                  </CldUploadButton>
+               </div>
+                {logoValue && (
+                    <Image
+                      src={logoValue}
+                      alt="Company Logo Preview"
+                      width={80}
+                      height={80}
+                      className="rounded-lg border object-contain aspect-square"
+                    />
+                )}
+             </div>
             {state.errors?.companyLogo && (
               <p className="text-sm text-destructive">
                 {state.errors.companyLogo[0]}

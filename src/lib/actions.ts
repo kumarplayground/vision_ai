@@ -35,11 +35,7 @@ const JobSchema = z.object({
     .string()
     .min(10, 'Description must be at least 10 characters long.'),
   applyLink: z.string().url('Please enter a valid URL.'),
-  companyLogo: z
-    .string()
-    .refine((val) => val.startsWith('http') || val.startsWith('data:image'), {
-      message: 'Please enter a valid URL or upload an image for the company logo.',
-    }),
+  companyLogo: z.string().url("Please provide a valid URL for the company logo.").optional().or(z.literal('')),
 });
 
 type FormState = {

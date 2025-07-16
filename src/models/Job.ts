@@ -15,7 +15,7 @@ const JobSchema: Schema = new Schema({
   location: { type: String, required: true },
   description: { type: String, required: true },
   applyLink: { type: String, required: true },
-  companyLogo: { type: String, required: true },
+  companyLogo: { type: String, required: false },
 }, {
   timestamps: true,
 });
