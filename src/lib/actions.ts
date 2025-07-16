@@ -1,30 +1,29 @@
 'use server';
 
-import {revalidatePath} from 'next/cache';
-import {z} from 'zod';
-import {jobs, courses} from './data';
-import type {Job, Course} from '@/types';
-import fs from 'fs/promises';
-import path from 'path';
+import { revalidatePath } from 'next/cache';
+import { z } from 'zod';
+import dbConnect from './mongodb';
+import Job from '@/models/Job';
+import Course from '@/models/Course';
 
 export async function getJobSummary(
   description: string
 ): Promise<{summary?: string; error?: string}> {
   if (!description) {
-    return {error: 'Job description is empty.'};
+    return { error: 'Job description is empty.' };
   }
 
   try {
-    const {summarizeJobDescription} = await import(
+    const { summarizeJobDescription } = await import(
       '@/ai/flows/job-description-summarizer'
     );
     const result = await summarizeJobDescription({
       jobDescription: description,
     });
-    return {summary: result.summary};
+    return { summary: result.summary };
   } catch (e) {
     console.error(e);
-    return {error: 'Failed to generate summary. Please try again.'};
+    return { error: 'Failed to generate summary. Please try again.' };
   }
 }
 
@@ -49,20 +48,6 @@ type FormState = {
   } | null;
 };
 
-async function saveJobs(newJobs: Job[]) {
-  const dataPath = path.join(process.cwd(), 'src', 'lib', 'data.ts');
-  const fileContent = await fs.readFile(dataPath, 'utf8');
-
-  const newJobsString = JSON.stringify(newJobs, null, 2);
-  
-  const updatedFileContent = fileContent.replace(
-    /(export const jobs: Job\[] = )\[[\s\S]*?];/,
-    `$1${newJobsString};`
-  );
-
-  await fs.writeFile(dataPath, updatedFileContent, 'utf8');
-}
-
 export async function createJob(
   prevState: FormState,
   formData: FormData
@@ -83,20 +68,14 @@ export async function createJob(
   }
 
   try {
-    const newJob: Job = {
-      id: String(Date.now()),
-      ...validatedFields.data,
-      postedAt: 'Just now',
-    };
-
-    const newJobs = [newJob, ...jobs];
-    await saveJobs(newJobs);
+    await dbConnect();
+    await Job.create(validatedFields.data);
 
     revalidatePath('/');
     revalidatePath('/jobs');
     revalidatePath('/admin/jobs');
 
-    return {message: 'success'};
+    return { message: 'success' };
   } catch (error) {
     console.error('Failed to create job:', error);
     return {
@@ -131,11 +110,8 @@ export async function updateJob(
   }
 
   try {
-    const updatedJobs = jobs.map((job) =>
-      job.id === id ? { ...job, ...validatedFields.data } : job
-    );
-
-    await saveJobs(updatedJobs);
+    await dbConnect();
+    await Job.findByIdAndUpdate(id, validatedFields.data);
 
     revalidatePath('/');
     revalidatePath('/jobs');
@@ -155,8 +131,8 @@ export async function deleteJob(
   jobId: string
 ): Promise<{ success: boolean; message: string }> {
   try {
-    const updatedJobs = jobs.filter((job) => job.id !== jobId);
-    await saveJobs(updatedJobs);
+    await dbConnect();
+    await Job.findByIdAndDelete(jobId);
 
     revalidatePath('/');
     revalidatePath('/jobs');
@@ -169,15 +145,16 @@ export async function deleteJob(
   }
 }
 
-
 const CourseSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters long.'),
   description: z
     .string()
     .min(10, 'Description must be at least 10 characters long.'),
-  thumbnail: z.string().refine(val => val.startsWith('http') || val.startsWith('data:image'), {
-    message: 'Please enter a valid URL or upload an image.'
-  }),
+  thumbnail: z
+    .string()
+    .refine((val) => val.startsWith('http') || val.startsWith('data:image'), {
+      message: 'Please enter a valid URL or upload an image.',
+    }),
   buyLink: z.string().url('Please enter a valid URL.'),
 });
 
@@ -190,21 +167,6 @@ type CourseFormState = {
     buyLink?: string[];
   } | null;
 };
-
-async function saveCourses(newCourses: Course[]) {
-  const dataPath = path.join(process.cwd(), 'src', 'lib', 'data.ts');
-  const fileContent = await fs.readFile(dataPath, 'utf8');
-
-  const newCoursesString = JSON.stringify(newCourses, null, 2);
-
-  const updatedFileContent = fileContent.replace(
-    /(export const courses: Course\[] = )\[[\s\S]*?];/,
-    `$1${newCoursesString};`
-  );
-
-  await fs.writeFile(dataPath, updatedFileContent, 'utf8');
-}
-
 
 export async function createCourse(
   prevState: CourseFormState,
@@ -225,19 +187,14 @@ export async function createCourse(
   }
 
   try {
-    const newCourse: Course = {
-      id: String(Date.now()),
-      ...validatedFields.data,
-    };
-
-    const newCourses = [newCourse, ...courses];
-    await saveCourses(newCourses);
+    await dbConnect();
+    await Course.create(validatedFields.data);
 
     revalidatePath('/');
     revalidatePath('/courses');
     revalidatePath('/admin/courses');
 
-    return {message: 'success'};
+    return { message: 'success' };
   } catch (error) {
     console.error('Failed to create course:', error);
     return {
@@ -271,11 +228,8 @@ export async function updateCourse(
   }
 
   try {
-    const updatedCourses = courses.map((course) =>
-      course.id === id ? { ...course, ...validatedFields.data } : course
-    );
-
-    await saveCourses(updatedCourses);
+    await dbConnect();
+    await Course.findByIdAndUpdate(id, validatedFields.data);
 
     revalidatePath('/');
     revalidatePath('/courses');
@@ -295,8 +249,8 @@ export async function deleteCourse(
   courseId: string
 ): Promise<{ success: boolean; message: string }> {
   try {
-    const updatedCourses = courses.filter((course) => course.id !== courseId);
-    await saveCourses(updatedCourses);
+    await dbConnect();
+    await Course.findByIdAndDelete(courseId);
 
     revalidatePath('/');
     revalidatePath('/courses');

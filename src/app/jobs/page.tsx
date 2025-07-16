@@ -1,9 +1,27 @@
+
 import { JobCard } from "@/components/job-card";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { jobs } from "@/lib/data";
+import Job from "@/models/Job";
+import dbConnect from "@/lib/mongodb";
+import { unstable_noStore as noStore } from 'next/cache';
 
-export default function JobsPage() {
+async function getJobs() {
+  noStore();
+  try {
+    await dbConnect();
+    const jobs = await Job.find({}).sort({ createdAt: -1 });
+    // Mongoose objects are not plain objects, so we need to serialize them
+    return JSON.parse(JSON.stringify(jobs));
+  } catch (error) {
+    console.error("Failed to fetch jobs:", error);
+    return [];
+  }
+}
+
+export default async function JobsPage() {
+  const jobs = await getJobs();
+
   return (
     <div className="flex flex-col min-h-dvh">
       <Header />

@@ -1,15 +1,43 @@
+
 import Link from "next/link";
 import { ArrowRight, Briefcase, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CourseCard } from "@/components/course-card";
 import { JobCard } from "@/components/job-card";
-import { jobs, courses } from "@/lib/data";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import Job from "@/models/Job";
+import Course from "@/models/Course";
+import dbConnect from "@/lib/mongodb";
+import { unstable_noStore as noStore } from 'next/cache';
 
-export default function Home() {
-  const latestJobs = jobs.slice(0, 3);
-  const featuredCourses = courses.slice(0, 3);
+async function getLatestJobs() {
+  noStore();
+  try {
+    await dbConnect();
+    const jobs = await Job.find({}).sort({ createdAt: -1 }).limit(3);
+    return JSON.parse(JSON.stringify(jobs));
+  } catch (error) {
+    console.error("Failed to fetch latest jobs:", error);
+    return [];
+  }
+}
+
+async function getFeaturedCourses() {
+  noStore();
+  try {
+    await dbConnect();
+    const courses = await Course.find({}).sort({ createdAt: -1 }).limit(3);
+    return JSON.parse(JSON.stringify(courses));
+  } catch (error) {
+    console.error("Failed to fetch featured courses:", error);
+    return [];
+  }
+}
+
+export default async function Home() {
+  const latestJobs = await getLatestJobs();
+  const featuredCourses = await getFeaturedCourses();
 
   return (
     <div className="flex flex-col min-h-dvh">
@@ -50,8 +78,8 @@ export default function Home() {
               </Button>
             </div>
             <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {latestJobs.map((job) => (
-                <JobCard key={job.id} job={job} />
+              {latestJobs.map((job: any) => (
+                <JobCard key={job._id} job={job} />
               ))}
             </div>
           </section>
@@ -66,8 +94,8 @@ export default function Home() {
               </Button>
             </div>
             <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {featuredCourses.map((course) => (
-                <CourseCard key={course.id} course={course} />
+              {featuredCourses.map((course: any) => (
+                <CourseCard key={course._id} course={course} />
               ))}
             </div>
           </section>

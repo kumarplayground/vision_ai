@@ -68,7 +68,7 @@ export function CourseForm({ course }: { course?: Course }) {
     <form action={formAction}>
       <Card>
         <CardContent className="pt-6 space-y-6">
-          <input type="hidden" name="id" value={course?.id} />
+          <input type="hidden" name="id" value={course?._id} />
           <div className="space-y-2">
             <Label htmlFor="title">Course Title</Label>
             <Input id="title" name="title" defaultValue={course?.title} required />

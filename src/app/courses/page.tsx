@@ -1,9 +1,26 @@
+
 import { CourseCard } from "@/components/course-card";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { courses } from "@/lib/data";
+import Course from "@/models/Course";
+import dbConnect from "@/lib/mongodb";
+import { unstable_noStore as noStore } from 'next/cache';
 
-export default function CoursesPage() {
+async function getCourses() {
+  noStore();
+  try {
+    await dbConnect();
+    const courses = await Course.find({}).sort({ createdAt: -1 });
+    return JSON.parse(JSON.stringify(courses));
+  } catch (error) {
+    console.error("Failed to fetch courses:", error);
+    return [];
+  }
+}
+
+export default async function CoursesPage() {
+  const courses = await getCourses();
+
   return (
     <div className="flex flex-col min-h-dvh">
       <Header />

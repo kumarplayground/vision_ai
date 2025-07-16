@@ -45,7 +45,7 @@ export function JobForm({ job }: { job?: Job }) {
     <form action={formAction}>
       <Card>
         <CardContent className="pt-6 space-y-6">
-          <input type="hidden" name="id" value={job?.id} />
+          <input type="hidden" name="id" value={job?._id} />
           <div className="space-y-2">
             <Label htmlFor="title">Job Title</Label>
             <Input id="title" name="title" defaultValue={job?.title} required />

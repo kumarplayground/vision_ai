@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { formatDistanceToNow } from 'date-fns';
 import {
   Table,
   TableBody,
@@ -50,7 +51,7 @@ export function JobsTable({ jobs }: JobsTableProps) {
 
   const handleDeleteConfirm = async () => {
     if (jobToDelete) {
-      const result = await deleteJob(jobToDelete.id);
+      const result = await deleteJob(jobToDelete._id);
       if (result.success) {
         toast({
           title: "Job Deleted",
@@ -85,14 +86,14 @@ export function JobsTable({ jobs }: JobsTableProps) {
           </TableHeader>
           <TableBody>
             {jobs.map((job) => (
-              <TableRow key={job.id}>
+              <TableRow key={job._id}>
                 <TableCell className="font-medium">{job.title}</TableCell>
                 <TableCell>{job.company}</TableCell>
                 <TableCell className="hidden md:table-cell">
                   {job.location}
                 </TableCell>
                 <TableCell className="hidden md:table-cell">
-                  <Badge variant="outline">{job.postedAt}</Badge>
+                  <Badge variant="outline">{formatDistanceToNow(new Date(job.createdAt), { addSuffix: true })}</Badge>
                 </TableCell>
                 <TableCell>
                   <DropdownMenu>
@@ -105,7 +106,7 @@ export function JobsTable({ jobs }: JobsTableProps) {
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
                       <DropdownMenuItem asChild>
-                        <Link href={`/admin/jobs/edit/${job.id}`}>
+                        <Link href={`/admin/jobs/edit/${job._id}`}>
                           <Pencil className="mr-2 h-4 w-4" />
                           Edit
                         </Link>

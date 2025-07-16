@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { formatDistanceToNow } from 'date-fns';
 import {
   Briefcase,
   MapPin,
@@ -71,7 +72,7 @@ export function JobCard({ job }: JobCardProps) {
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Badge variant="outline">{job.postedAt}</Badge>
+          <Badge variant="outline">{formatDistanceToNow(new Date(job.createdAt), { addSuffix: true })}</Badge>
           <DialogTrigger asChild>
             <Button variant="secondary">View Details</Button>
           </DialogTrigger>

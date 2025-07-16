@@ -1,9 +1,24 @@
 import { CourseForm } from "@/components/admin/course-form";
-import { courses } from "@/lib/data";
+import dbConnect from "@/lib/mongodb";
+import Course from "@/models/Course";
 import { notFound } from "next/navigation";
 
-export default function EditCoursePage({ params }: { params: { id: string } }) {
-  const course = courses.find((c) => c.id === params.id);
+async function getCourse(id: string) {
+  try {
+    await dbConnect();
+    const course = await Course.findById(id);
+    if (!course) {
+      return null;
+    }
+    return JSON.parse(JSON.stringify(course));
+  } catch (error) {
+    console.error("Failed to fetch course:", error);
+    return null;
+  }
+}
+
+export default async function EditCoursePage({ params }: { params: { id: string } }) {
+  const course = await getCourse(params.id);
 
   if (!course) {
     notFound();

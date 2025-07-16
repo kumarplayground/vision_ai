@@ -1,10 +1,27 @@
-import { courses } from "@/lib/data";
+
 import { CoursesTable } from "@/components/admin/courses-table";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import Link from "next/link";
+import Course from "@/models/Course";
+import dbConnect from "@/lib/mongodb";
+import { unstable_noStore as noStore } from 'next/cache';
 
-export default function AdminCoursesPage() {
+async function getCourses() {
+  noStore();
+  try {
+    await dbConnect();
+    const courses = await Course.find({}).sort({ createdAt: -1 });
+    return JSON.parse(JSON.stringify(courses));
+  } catch (error) {
+    console.error("Failed to fetch courses:", error);
+    return [];
+  }
+}
+
+export default async function AdminCoursesPage() {
+  const courses = await getCourses();
+
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
       <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">

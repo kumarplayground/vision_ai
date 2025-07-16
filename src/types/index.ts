@@ -1,15 +1,17 @@
 export interface Job {
-  id: string;
+  _id: string;
+  id: string; // id is an alias for _id
   title: string;
   company: string;
   location: string;
   description: string;
   applyLink: string;
-  postedAt: string;
+  createdAt: string;
 }
 
 export interface Course {
-  id: string;
+  _id: string;
+  id: string; // id is an alias for _id
   title: string;
   description: string;
   thumbnail: string;

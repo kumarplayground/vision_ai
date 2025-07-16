@@ -1,9 +1,24 @@
 import { JobForm } from "@/components/admin/job-form";
-import { jobs } from "@/lib/data";
+import dbConnect from "@/lib/mongodb";
+import Job from "@/models/Job";
 import { notFound } from "next/navigation";
 
-export default function EditJobPage({ params }: { params: { id: string } }) {
-  const job = jobs.find((j) => j.id === params.id);
+async function getJob(id: string) {
+  try {
+    await dbConnect();
+    const job = await Job.findById(id);
+    if (!job) {
+      return null;
+    }
+    return JSON.parse(JSON.stringify(job));
+  } catch (error) {
+    console.error("Failed to fetch job:", error);
+    return null;
+  }
+}
+
+export default async function EditJobPage({ params }: { params: { id: string } }) {
+  const job = await getJob(params.id);
 
   if (!job) {
     notFound();
