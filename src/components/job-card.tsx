@@ -132,7 +132,7 @@ export function JobCard({ job }: JobCardProps) {
             </div>
 
             <div className="space-y-4">
-              <Button onClick={handleSummarize} disabled={isLoading} className="w-full sm:w-auto">
+              <Button onClick={handleSummarize} disabled={true || isLoading} className="w-full sm:w-auto">
                 {isLoading ? (
                   <>
                     <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
@@ -141,7 +141,7 @@ export function JobCard({ job }: JobCardProps) {
                 ) : (
                   <>
                     <Sparkles className="mr-2 h-4 w-4" />
-                    Summarize with AI
+                    Summarize with AI (Temporarily Disabled)
                   </>
                 )}
               </Button>

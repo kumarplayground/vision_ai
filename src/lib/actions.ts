@@ -9,22 +9,25 @@ import Course from '@/models/Course';
 export async function getJobSummary(
   description: string
 ): Promise<{summary?: string; error?: string}> {
-  if (!description) {
-    return { error: 'Job description is empty.' };
-  }
+  // Temporarily disabled to debug deployment issues.
+  return { error: 'AI summarization is temporarily unavailable.' };
+  
+  // if (!description) {
+  //   return { error: 'Job description is empty.' };
+  // }
 
-  try {
-    const { summarizeJobDescription } = await import(
-      '@/ai/flows/job-description-summarizer'
-    );
-    const result = await summarizeJobDescription({
-      jobDescription: description,
-    });
-    return { summary: result.summary };
-  } catch (e) {
-    console.error(e);
-    return { error: 'Failed to generate summary. Please try again.' };
-  }
+  // try {
+  //   const { summarizeJobDescription } = await import(
+  //     '@/ai/flows/job-description-summarizer'
+  //   );
+  //   const result = await summarizeJobDescription({
+  //     jobDescription: description,
+  //   });
+  //   return { summary: result.summary };
+  // } catch (e) {
+  //   console.error(e);
+  //   return { error: 'Failed to generate summary. Please try again.' };
+  // }
 }
 
 const JobSchema = z.object({
