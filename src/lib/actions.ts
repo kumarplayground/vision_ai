@@ -35,6 +35,11 @@ const JobSchema = z.object({
     .string()
     .min(10, 'Description must be at least 10 characters long.'),
   applyLink: z.string().url('Please enter a valid URL.'),
+  companyLogo: z
+    .string()
+    .refine((val) => val.startsWith('http') || val.startsWith('data:image'), {
+      message: 'Please enter a valid URL or upload an image for the company logo.',
+    }),
 });
 
 type FormState = {
@@ -45,6 +50,7 @@ type FormState = {
     location?: string[];
     description?: string[];
     applyLink?: string[];
+    companyLogo?: string[];
   } | null;
 };
 
@@ -58,6 +64,7 @@ export async function createJob(
     location: formData.get('location'),
     description: formData.get('description'),
     applyLink: formData.get('applyLink'),
+    companyLogo: formData.get('companyLogo'),
   });
 
   if (!validatedFields.success) {
@@ -100,6 +107,7 @@ export async function updateJob(
     location: formData.get('location'),
     description: formData.get('description'),
     applyLink: formData.get('applyLink'),
+    companyLogo: formData.get('companyLogo'),
   });
 
   if (!validatedFields.success) {

@@ -6,6 +6,7 @@ export interface Job {
   location: string;
   description: string;
   applyLink: string;
+  companyLogo: string;
   createdAt: string;
 }
 

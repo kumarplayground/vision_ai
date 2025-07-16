@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { formatDistanceToNow } from 'date-fns';
 import {
   Briefcase,
@@ -60,10 +61,22 @@ export function JobCard({ job }: JobCardProps) {
     <Dialog>
       <Card className="flex h-full flex-col transition-all hover:shadow-lg">
         <CardHeader>
-          <CardTitle className="text-xl">{job.title}</CardTitle>
-          <CardDescription className="!mt-1 flex items-center gap-2 pt-1 text-sm">
-            <Briefcase className="h-4 w-4" /> {job.company}
-          </CardDescription>
+          <div className="flex justify-between items-start gap-4">
+            <div className="flex-1">
+              <CardTitle className="text-xl">{job.title}</CardTitle>
+              <CardDescription className="!mt-1 flex items-center gap-2 pt-1 text-sm">
+                <Briefcase className="h-4 w-4" /> {job.company}
+              </CardDescription>
+            </div>
+             <Image
+              src={job.companyLogo}
+              alt={`${job.company} logo`}
+              width={48}
+              height={48}
+              className="rounded-md object-contain"
+              data-ai-hint="company logo"
+            />
+          </div>
         </CardHeader>
         <CardContent className="flex-grow">
           <div className="flex items-center gap-2 text-muted-foreground">
@@ -83,16 +96,28 @@ export function JobCard({ job }: JobCardProps) {
         <ScrollArea className="max-h-[80vh]">
           <div className="pr-6">
             <DialogHeader>
-              <DialogTitle className="text-2xl">{job.title}</DialogTitle>
-              <DialogDescription className="flex flex-col gap-2 pt-2 sm:flex-row sm:items-center">
-                <div className="flex items-center gap-2">
-                  <Briefcase className="h-4 w-4" /> {job.company}
+              <div className="flex justify-between items-start gap-4">
+                <div className="flex-1">
+                 <DialogTitle className="text-2xl">{job.title}</DialogTitle>
+                  <DialogDescription className="flex flex-col gap-2 pt-2 sm:flex-row sm:items-center">
+                    <div className="flex items-center gap-2">
+                      <Briefcase className="h-4 w-4" /> {job.company}
+                    </div>
+                    <span className="hidden sm:inline">·</span>
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4" /> {job.location}
+                    </div>
+                  </DialogDescription>
                 </div>
-                <span className="hidden sm:inline">·</span>
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4" /> {job.location}
-                </div>
-              </DialogDescription>
+                <Image
+                  src={job.companyLogo}
+                  alt={`${job.company} logo`}
+                  width={64}
+                  height={64}
+                  className="rounded-md object-contain"
+                  data-ai-hint="company logo"
+                />
+              </div>
             </DialogHeader>
 
             <div className="py-6">
