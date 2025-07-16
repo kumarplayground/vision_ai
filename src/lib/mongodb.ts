@@ -12,18 +12,21 @@ if (!cached) {
 }
 
 async function dbConnect() {
-  const MONGODB_URI = process.env.MONGODB_URI;
+  if (cached.conn) {
+    return cached.conn;
+  }
+
+  // IMPORTANT: The MONGODB_URI is hardcoded here to bypass environment variable loading issues.
+  // In a real-world production application, this should be loaded from a secure environment variable.
+  const MONGODB_URI = "mongodb+srv://kumarplayground12345:DyyN8ActKuuvqj5f@cluster0.g3lsyha.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
   if (!MONGODB_URI) {
+    // This check is kept for future-proofing, in case the hardcoded value is removed.
     throw new Error(
       'Please define the MONGODB_URI environment variable inside .env'
     );
   }
   
-  if (cached.conn) {
-    return cached.conn;
-  }
-
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
