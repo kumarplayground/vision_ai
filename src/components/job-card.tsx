@@ -68,14 +68,16 @@ export function JobCard({ job }: JobCardProps) {
                 <Briefcase className="h-4 w-4" /> {job.company}
               </CardDescription>
             </div>
-             <Image
-              src={job.companyLogo}
-              alt={`${job.company} logo`}
-              width={48}
-              height={48}
-              className="rounded-md object-contain"
-              data-ai-hint="company logo"
-            />
+            {job.companyLogo && (
+              <Image
+                src={job.companyLogo}
+                alt={`${job.company} logo`}
+                width={48}
+                height={48}
+                className="rounded-md object-contain"
+                data-ai-hint="company logo"
+              />
+            )}
           </div>
         </CardHeader>
         <CardContent className="flex-grow">
@@ -109,14 +111,16 @@ export function JobCard({ job }: JobCardProps) {
                     </div>
                   </DialogDescription>
                 </div>
-                <Image
-                  src={job.companyLogo}
-                  alt={`${job.company} logo`}
-                  width={64}
-                  height={64}
-                  className="rounded-md object-contain"
-                  data-ai-hint="company logo"
-                />
+                {job.companyLogo && (
+                  <Image
+                    src={job.companyLogo}
+                    alt={`${job.company} logo`}
+                    width={64}
+                    height={64}
+                    className="rounded-md object-contain"
+                    data-ai-hint="company logo"
+                  />
+                )}
               </div>
             </DialogHeader>
 
