@@ -46,7 +46,9 @@ export function JobForm({ job }: { job?: Job }) {
   }, [state.message, router]);
 
   const handleUploadSuccess = (result: any) => {
-    setLogoValue(result.info.secure_url);
+    if (result.event === 'success' && result.info) {
+      setLogoValue(result.info.secure_url);
+    }
   };
 
   return (
