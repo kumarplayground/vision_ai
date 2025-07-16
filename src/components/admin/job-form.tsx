@@ -38,6 +38,7 @@ export function JobForm({ job }: { job?: Job }) {
   const router = useRouter();
   
   const [logoValue, setLogoValue] = useState(job?.companyLogo || "");
+  const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
 
   useEffect(() => {
     if (state.message === "success") {
@@ -91,7 +92,7 @@ export function JobForm({ job }: { job?: Job }) {
                   />
                   <CldUploadButton
                     onSuccess={handleUploadSuccess}
-                    uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
+                    uploadPreset={uploadPreset}
                     className="w-full"
                   >
                     <Button type="button" variant="outline" className="w-full">
