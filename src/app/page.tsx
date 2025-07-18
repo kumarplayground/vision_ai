@@ -13,7 +13,7 @@ async function getLatestJobs() {
   noStore();
   try {
     await dbConnect();
-    const jobs = await Job.find({}).sort({ createdAt: -1 }).limit(3);
+    const jobs = await Job.find({}).sort({ createdAt: -1 }).limit(6);
     return JSON.parse(JSON.stringify(jobs));
   } catch (error) {
     console.error("Failed to fetch latest jobs:", error);
