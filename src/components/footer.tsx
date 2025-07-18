@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import { Briefcase, Facebook, Twitter, Instagram, Linkedin, Youtube, Send } from "lucide-react";
 
@@ -31,7 +32,7 @@ export function Footer() {
                 <Linkedin className="h-6 w-6" />
                 <span className="sr-only">LinkedIn</span>
               </a>
-              <a href="#" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+              <a href="https://www.youtube.com/@SuziieVlogs" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
                 <Youtube className="h-6 w-6" />
                 <span className="sr-only">YouTube</span>
               </a>
