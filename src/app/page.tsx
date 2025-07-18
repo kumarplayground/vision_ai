@@ -95,9 +95,13 @@ export default async function Home() {
           </section>
 
           <section className="container mx-auto px-4 pb-16 sm:pb-24">
-            <div className="flex items-center justify-between">
+            <div className="relative text-center">
               <h2 className="text-3xl font-bold tracking-tight">Latest Jobs</h2>
-              <Button asChild variant="link" className="text-primary">
+              <Button
+                asChild
+                variant="link"
+                className="text-primary absolute -top-1 right-0 hidden sm:inline-flex"
+              >
                 <Link href="/jobs">
                   View all <ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
