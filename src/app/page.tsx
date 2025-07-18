@@ -116,7 +116,7 @@ export default async function Home() {
               ))}
             </div>
             <div className="mt-12 text-center">
-              <Button asChild size="lg">
+              <Button asChild size="lg" variant="secondary">
                 <Link href="/jobs">Load More Jobs</Link>
               </Button>
             </div>
