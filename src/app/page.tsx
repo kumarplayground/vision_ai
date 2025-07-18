@@ -48,7 +48,7 @@ export default async function Home() {
         <div className="flex flex-col gap-16 md:gap-24">
           <section className="relative container mx-auto px-4 py-16 text-center sm:py-24">
             <div
-              className="absolute inset-0 -z-10 bg-gradient-to-br from-primary to-accent/70 blur-3xl"
+              className="absolute inset-0 -z-10 bg-radial-gradient(ellipse_at_center,var(--tw-gradient-stops)) from-primary to-primary/30 to-70% blur-3xl"
               aria-hidden="true"
             />
             <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
