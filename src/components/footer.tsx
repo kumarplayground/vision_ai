@@ -36,7 +36,7 @@ export function Footer() {
                 <Youtube className="h-6 w-6" />
                 <span className="sr-only">YouTube</span>
               </a>
-              <a href="#" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+              <a href="https://t.me/careerjugaaad" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
                 <Send className="h-6 w-6" />
                 <span className="sr-only">Telegram</span>
               </a>
