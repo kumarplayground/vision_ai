@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Briefcase } from "lucide-react";
+import { Briefcase, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 
 export function Footer() {
   return (
@@ -14,6 +14,24 @@ export function Footer() {
             <p className="mt-4 text-sm text-muted-foreground">
               Your guide to the next step in your career. Find jobs and courses to boost your skills.
             </p>
+            <div className="mt-4 flex space-x-4">
+              <a href="#" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                <Facebook className="h-6 w-6" />
+                <span className="sr-only">Facebook</span>
+              </a>
+              <a href="#" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                <Twitter className="h-6 w-6" />
+                <span className="sr-only">Twitter</span>
+              </a>
+              <a href="#" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                <Instagram className="h-6 w-6" />
+                <span className="sr-only">Instagram</span>
+              </a>
+              <a href="#" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                <Linkedin className="h-6 w-6" />
+                <span className="sr-only">LinkedIn</span>
+              </a>
+            </div>
           </div>
           <div className="md:col-start-3">
             <h3 className="font-semibold text-foreground">Quick Links</h3>
