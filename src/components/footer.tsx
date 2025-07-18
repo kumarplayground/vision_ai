@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Briefcase, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import { Briefcase, Facebook, Twitter, Instagram, Linkedin, Youtube, Send } from "lucide-react";
 
 export function Footer() {
   return (
@@ -30,6 +30,14 @@ export function Footer() {
               <a href="#" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
                 <Linkedin className="h-6 w-6" />
                 <span className="sr-only">LinkedIn</span>
+              </a>
+              <a href="#" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                <Youtube className="h-6 w-6" />
+                <span className="sr-only">YouTube</span>
+              </a>
+              <a href="#" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                <Send className="h-6 w-6" />
+                <span className="sr-only">Telegram</span>
               </a>
             </div>
           </div>
