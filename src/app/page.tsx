@@ -2,12 +2,10 @@
 import Link from "next/link";
 import { ArrowRight, Briefcase, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { CourseCard } from "@/components/course-card";
 import { JobCard } from "@/components/job-card";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import Job from "@/models/Job";
-import Course from "@/models/Course";
 import dbConnect from "@/lib/mongodb";
 import { unstable_noStore as noStore } from 'next/cache';
 
@@ -19,18 +17,6 @@ async function getLatestJobs() {
     return JSON.parse(JSON.stringify(jobs));
   } catch (error) {
     console.error("Failed to fetch latest jobs:", error);
-    return [];
-  }
-}
-
-async function getFeaturedCourses() {
-  noStore();
-  try {
-    await dbConnect();
-    const courses = await Course.find({}).sort({ createdAt: -1 }).limit(3);
-    return JSON.parse(JSON.stringify(courses));
-  } catch (error) {
-    console.error("Failed to fetch featured courses:", error);
     return [];
   }
 }
@@ -54,7 +40,6 @@ const companies = [
 
 export default async function Home() {
   const latestJobs = await getLatestJobs();
-  const featuredCourses = await getFeaturedCourses();
 
   return (
     <div className="flex flex-col min-h-dvh">
@@ -109,7 +94,7 @@ export default async function Home() {
             </div>
           </section>
 
-          <section className="container mx-auto px-4">
+          <section className="container mx-auto px-4 pb-16 sm:pb-24">
             <div className="flex items-center justify-between">
               <h2 className="text-3xl font-bold tracking-tight">Latest Jobs</h2>
               <Button asChild variant="link" className="text-primary">
@@ -121,22 +106,6 @@ export default async function Home() {
             <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
               {latestJobs.map((job: any) => (
                 <JobCard key={job._id} job={job} />
-              ))}
-            </div>
-          </section>
-
-          <section className="container mx-auto px-4 pb-16 sm:pb-24">
-            <div className="flex items-center justify-between">
-              <h2 className="text-3xl font-bold tracking-tight">Featured Courses</h2>
-              <Button asChild variant="link" className="text-primary">
-                <Link href="/courses">
-                  View all <ArrowRight className="ml-1 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-            <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {featuredCourses.map((course: any) => (
-                <CourseCard key={course._id} course={course} />
               ))}
             </div>
           </section>
