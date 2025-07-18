@@ -1,6 +1,6 @@
 
 import Link from "next/link";
-import { Briefcase, Facebook, Twitter, Instagram, Linkedin, Youtube, Send } from "lucide-react";
+import { Briefcase, Facebook, X, Instagram, Linkedin, Youtube, Send } from "lucide-react";
 
 export function Footer() {
   return (
@@ -21,8 +21,8 @@ export function Footer() {
                 <span className="sr-only">Facebook</span>
               </a>
               <a href="#" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
-                <Twitter className="h-6 w-6" />
-                <span className="sr-only">Twitter</span>
+                <X className="h-6 w-6" />
+                <span className="sr-only">X</span>
               </a>
               <a href="https://www.instagram.com/earnwithsuziie/?igsh=MTllMjhieTN4dHAxNQ%3D%3D&utm_source=qr#" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
                 <Instagram className="h-6 w-6" />
