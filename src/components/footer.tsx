@@ -6,8 +6,8 @@ export function Footer() {
   return (
     <footer className="bg-secondary text-secondary-foreground">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-          <div className="lg:col-span-1">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-12">
+          <div className="md:col-span-5 lg:col-span-4">
              <Link href="/" className="mb-4 flex items-center space-x-2 text-xl font-bold">
               <Briefcase className="h-7 w-7 text-primary" />
               <span className="text-foreground">CareerJugaad</span>
@@ -42,14 +42,27 @@ export function Footer() {
               </a>
             </div>
           </div>
-          <div className="md:col-start-3">
-            <h3 className="font-semibold text-foreground">Quick Links</h3>
-            <ul className="mt-4 space-y-2 text-sm">
-              <li><Link href="/about" className="text-muted-foreground hover:text-primary">About Us</Link></li>
-              <li><Link href="/disclaimer" className="text-muted-foreground hover:text-primary">Disclaimer</Link></li>
-              <li><Link href="/privacy" className="text-muted-foreground hover:text-primary">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="text-muted-foreground hover:text-primary">Terms & Conditions</Link></li>
-            </ul>
+          <div className="md:col-span-7 lg:col-span-8 md:justify-self-end">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
+              <div>
+                 <h3 className="font-semibold text-foreground">Quick Links</h3>
+                 <ul className="mt-4 space-y-2 text-sm">
+                    <li><Link href="/about" className="text-muted-foreground hover:text-primary">About Us</Link></li>
+                    <li><Link href="/disclaimer" className="text-muted-foreground hover:text-primary">Disclaimer</Link></li>
+                    <li><Link href="/privacy" className="text-muted-foreground hover:text-primary">Privacy Policy</Link></li>
+                    <li><Link href="/terms" className="text-muted-foreground hover:text-primary">Terms & Conditions</Link></li>
+                 </ul>
+              </div>
+               <div>
+                <h3 className="font-semibold text-foreground">Support</h3>
+                <ul className="mt-4 space-y-2 text-sm">
+                  <li><Link href="/help" className="text-muted-foreground hover:text-primary">Help Center</Link></li>
+                  <li><Link href="/contact" className="text-muted-foreground hover:text-primary">Contact Us</Link></li>
+                  <li><Link href="/privacy" className="text-muted-foreground hover:text-primary">Privacy Policies</Link></li>
+                  <li><Link href="/terms" className="text-muted-foreground hover:text-primary">Terms of Service</Link></li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
         <div className="mt-8 border-t border-border pt-8 text-center text-sm text-muted-foreground">
