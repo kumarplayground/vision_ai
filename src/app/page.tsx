@@ -48,16 +48,16 @@ export default async function Home() {
         <div className="flex flex-col gap-16 md:gap-24">
           <section className="relative container mx-auto px-4 py-16 text-center sm:py-24">
             <div
-              className="absolute inset-0 -z-10 bg-gradient-to-br from-indigo-200 via-slate-100 to-emerald-100 blur-3xl"
+              className="absolute inset-0 -z-10 bg-gradient-to-br from-primary to-accent/70 blur-3xl"
               aria-hidden="true"
             />
-            <h1 className="text-4xl font-extrabold tracking-tight text-slate-800 sm:text-5xl md:text-6xl lg:text-7xl">
+            <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
               Navigate Your{" "}
               <span className="bg-gradient-to-r from-blue-500 to-blue-400 bg-clip-text text-transparent">
                 Career Path
               </span>
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-600 md:text-xl">
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-foreground/80 md:text-xl">
               Discover your next opportunity. Explore curated job listings and skill-enhancing courses designed for growth.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
@@ -77,10 +77,10 @@ export default async function Home() {
           <section className="py-12 sm:py-16">
             <div className="container mx-auto px-4">
               <div className="text-center">
-                <h2 className="text-3xl font-bold tracking-tight text-slate-800">
+                <h2 className="text-3xl font-bold tracking-tight">
                   Trusted by leading companies
                 </h2>
-                <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
+                <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
                   Join thousands of active jobs listed by trusted companies.
                 </p>
               </div>
@@ -107,6 +107,11 @@ export default async function Home() {
               {latestJobs.map((job: any) => (
                 <JobCard key={job._id} job={job} />
               ))}
+            </div>
+            <div className="mt-12 text-center">
+              <Button asChild size="lg">
+                <Link href="/jobs">Load More Jobs</Link>
+              </Button>
             </div>
           </section>
         </div>
