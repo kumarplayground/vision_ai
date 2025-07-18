@@ -97,6 +97,9 @@ export default async function Home() {
           <section className="container mx-auto px-4 pb-16 sm:pb-24">
             <div className="relative text-center">
               <h2 className="text-3xl font-bold tracking-tight">Latest Jobs</h2>
+               <p className="mx-auto mt-2 max-w-2xl text-muted-foreground">
+                Explore our curated list of job openings from top companies.
+              </p>
               <Button
                 asChild
                 variant="link"
