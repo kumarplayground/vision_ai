@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
@@ -36,7 +37,7 @@ export function CourseCard({ course }: CourseCardProps) {
         <CardDescription>{course.description}</CardDescription>
       </CardContent>
       <CardFooter className="p-6 pt-0">
-        <Button asChild className="w-full" variant="secondary">
+        <Button asChild className="w-full">
           <a href={course.buyLink} target="_blank" rel="noopener noreferrer">
             Buy Now
             <ArrowRight className="ml-2 h-4 w-4" />

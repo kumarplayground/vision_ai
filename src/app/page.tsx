@@ -66,7 +66,7 @@ export default async function Home() {
                   Explore Jobs <Briefcase className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="secondary">
+              <Button asChild size="lg">
                 <Link href="/courses">
                   Browse Courses <BookOpen className="ml-2 h-5 w-5" />
                 </Link>

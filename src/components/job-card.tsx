@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -89,7 +90,7 @@ export function JobCard({ job }: JobCardProps) {
         <CardFooter className="flex justify-between">
           <Badge variant="outline">{formatDistanceToNow(new Date(job.createdAt), { addSuffix: true })}</Badge>
           <DialogTrigger asChild>
-            <Button variant="secondary">View Details</Button>
+            <Button>View Details</Button>
           </DialogTrigger>
         </CardFooter>
       </Card>
