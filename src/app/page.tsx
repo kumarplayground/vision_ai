@@ -74,7 +74,7 @@ export default async function Home() {
             </div>
           </section>
 
-          <section className="py-12 sm:py-16">
+          <section className="py-12 sm:py-16 bg-card">
             <div className="container mx-auto px-4">
               <div className="text-center">
                 <h2 className="text-3xl font-bold tracking-tight">
