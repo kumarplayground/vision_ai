@@ -57,12 +57,6 @@ export function HeaderClient({ navLinks }: HeaderClientProps) {
                 {label}
               </Link>
             ))}
-             <Button asChild variant="outline" size="sm">
-                <Link href="/admin">
-                    Admin
-                    <UserCog className="ml-2 h-4 w-4" />
-                </Link>
-            </Button>
           </nav>
         </div>
 
@@ -97,11 +91,6 @@ export function HeaderClient({ navLinks }: HeaderClientProps) {
                       </Link>
                     </SheetClose>
                   ))}
-                  <SheetClose asChild>
-                     <Link href="/admin" className="text-lg font-medium text-foreground/60 transition-colors hover:text-foreground/80 flex items-center gap-2">
-                        Admin <UserCog className="h-5 w-5" />
-                    </Link>
-                  </SheetClose>
                 </nav>
               </div>
             </SheetContent>
