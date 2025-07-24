@@ -102,13 +102,15 @@ export function JobCard({ job }: JobCardProps) {
               <div className="flex justify-between items-start gap-4">
                 <div className="flex-1">
                  <DialogTitle className="text-2xl">{job.title}</DialogTitle>
-                  <DialogDescription className="flex flex-col gap-2 pt-2 sm:flex-row sm:items-center">
-                    <div className="flex items-center gap-2">
-                      <Briefcase className="h-4 w-4" /> {job.company}
-                    </div>
-                    <span className="hidden sm:inline">·</span>
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4" /> {job.location}
+                  <DialogDescription asChild>
+                    <div className="flex flex-col gap-2 pt-2 sm:flex-row sm:items-center text-sm text-muted-foreground">
+                      <div className="flex items-center gap-2">
+                        <Briefcase className="h-4 w-4" /> {job.company}
+                      </div>
+                      <span className="hidden sm:inline">·</span>
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4" /> {job.location}
+                      </div>
                     </div>
                   </DialogDescription>
                 </div>
