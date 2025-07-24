@@ -19,7 +19,6 @@ import {
   SidebarInset,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-import { Header } from "@/components/header";
 import { logout } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 
@@ -33,7 +32,6 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   return (
     <SidebarProvider>
       <div className="relative flex min-h-dvh flex-col bg-background">
-        <Header />
         <div className="flex flex-1">
           <Sidebar>
             <SidebarHeader>
