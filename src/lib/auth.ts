@@ -3,8 +3,8 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 const AUTH_COOKIE_NAME = 'admin_auth';
-const ADMIN_USERID = process.env.ADMIN_USERID || 'admin';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'password';
+const ADMIN_USERID = process.env.ADMIN_USERID;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 export async function login(
   prevState: { error?: string } | undefined,
@@ -12,6 +12,10 @@ export async function login(
 ): Promise<{ error?: string }> {
   const userId = formData.get('userId') as string;
   const password = formData.get('password') as string;
+
+  if (!ADMIN_USERID || !ADMIN_PASSWORD) {
+    return { error: 'Admin credentials are not configured on the server.' };
+  }
 
   if (userId !== ADMIN_USERID || password !== ADMIN_PASSWORD) {
     return { error: 'Invalid User ID or password.' };
