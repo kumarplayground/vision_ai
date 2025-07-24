@@ -1,3 +1,4 @@
+
 'use server';
 
 import { revalidatePath } from 'next/cache';
@@ -157,11 +158,7 @@ const CourseSchema = z.object({
   description: z
     .string()
     .min(10, 'Description must be at least 10 characters long.'),
-  thumbnail: z
-    .string()
-    .refine((val) => val.startsWith('http') || val.startsWith('data:image'), {
-      message: 'Please enter a valid URL or upload an image.',
-    }),
+  thumbnail: z.string().url('Please enter a valid URL.'),
   buyLink: z.string().url('Please enter a valid URL.'),
 });
 
