@@ -3,6 +3,7 @@ import { HeaderClient } from "./header-client";
 const navLinks = [
   { href: "/jobs", label: "Jobs" },
   { href: "/courses", label: "Courses" },
+  { href: "/about", label: "About Us" },
 ];
 
 export function Header() {
