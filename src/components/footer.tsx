@@ -10,7 +10,7 @@ export function Footer() {
           <div className="md:col-span-6">
              <Link href="/" className="mb-4 flex items-center space-x-2 text-xl font-bold">
               <Briefcase className="h-7 w-7 text-primary" />
-              <span className="text-white">CareerJugaad</span>
+              <span className="text-white">vision.ai</span>
             </Link>
             <p className="mt-4 text-sm text-gray-300">
               Your guide to the next step in your career. Find jobs and courses to boost your skills.
@@ -62,7 +62,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t border-gray-700 pt-8 text-center text-sm text-gray-400">
-          <p>&copy; {new Date().getFullYear()} CareerJugaad. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} vision.ai. All rights reserved.</p>
         </div>
       </div>
     </footer>

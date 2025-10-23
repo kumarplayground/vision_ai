@@ -14,7 +14,7 @@ export default function AboutUsPage() {
             </h1>
             <div className="prose prose-lg text-muted-foreground">
               <p>
-                Welcome to CareerJugaad. Our mission is to bridge the gap between talent and opportunity. We believe that everyone deserves a chance to build a meaningful career, and we are dedicated to providing the resources and guidance needed to navigate the modern job market.
+                Welcome to vision.ai. Our mission is to bridge the gap between talent and opportunity. We believe that everyone deserves a chance to build a meaningful career, and we are dedicated to providing the resources and guidance needed to navigate the modern job market.
               </p>
               <p>
                 From curated job listings to skill-enhancing courses, our platform is designed to empower you at every step of your professional journey. We are passionate about helping you find not just a job, but a career that you love.

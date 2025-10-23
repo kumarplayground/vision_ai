@@ -14,7 +14,7 @@ export default function TermsAndConditionsPage() {
             </h1>
             <div className="prose prose-lg text-muted-foreground">
               <p>
-                Welcome to CareerJugaad. By accessing our website, you agree to be bound by these Terms and Conditions of Use, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws. If you do not agree with any of these terms, you are prohibited from using or accessing this site.
+                Welcome to vision.ai. By accessing our website, you agree to be bound by these Terms and Conditions of Use, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws. If you do not agree with any of these terms, you are prohibited from using or accessing this site.
               </p>
               <p>
                 The materials contained in this website are protected by applicable copyright and trademark law. Permission is granted to temporarily download one copy of the materials on our website for personal, non-commercial transitory viewing only.
