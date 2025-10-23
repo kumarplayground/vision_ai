@@ -21,13 +21,8 @@ export default function ContactUsPage() {
                 We&apos;d love to hear from you. Fill out the form below to get in touch.
               </p>
             </div>
-            {/* 
-              ACTION REQUIRED: 
-              1. Go to https://formspree.io/ and create a new form.
-              2. Replace "YOUR_FORM_ID" with the actual ID from Formspree.
-            */}
             <form 
-              action="https://formspree.io/f/YOUR_FORM_ID" 
+              action="https://formspree.io/f/mrbywwbe" 
               method="POST" 
               className="space-y-6"
             >
