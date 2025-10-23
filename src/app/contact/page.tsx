@@ -21,18 +21,27 @@ export default function ContactUsPage() {
                 We&apos;d love to hear from you. Fill out the form below to get in touch.
               </p>
             </div>
-            <form className="space-y-6">
+            {/* 
+              ACTION REQUIRED: 
+              1. Go to https://formspree.io/ and create a new form.
+              2. Replace "YOUR_FORM_ID" with the actual ID from Formspree.
+            */}
+            <form 
+              action="https://formspree.io/f/YOUR_FORM_ID" 
+              method="POST" 
+              className="space-y-6"
+            >
               <div className="space-y-2">
                 <Label htmlFor="name">Name</Label>
-                <Input id="name" placeholder="Enter your name" />
+                <Input id="name" name="name" placeholder="Enter your name" required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="Enter your email" />
+                <Input id="email" type="email" name="email" placeholder="Enter your email" required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="message">Message</Label>
-                <Textarea id="message" placeholder="Enter your message" rows={5} />
+                <Textarea id="message" name="message" placeholder="Enter your message" rows={5} required />
               </div>
               <Button type="submit" className="w-full">
                 Send Message
