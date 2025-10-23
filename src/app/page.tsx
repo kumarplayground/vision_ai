@@ -52,9 +52,9 @@ export default async function Home() {
               aria-hidden="true"
             />
             <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-              Navigate Your{" "}
+              A Vision To Make{" "}
               <span className="bg-gradient-to-r from-blue-500 to-blue-400 bg-clip-text text-transparent">
-                Career Path
+                India Smarter
               </span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-foreground/80 md:text-xl">
