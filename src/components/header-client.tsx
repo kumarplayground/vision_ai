@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Briefcase, Menu, UserCog } from "lucide-react";
+import { Menu } from "lucide-react";
 import Image from 'next/image';
 
 import { cn } from "@/lib/utils";
@@ -41,7 +41,7 @@ export function HeaderClient({ navLinks }: HeaderClientProps) {
       <div className="container flex h-14 items-center">
         <div className="mr-4 hidden md:flex">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-            <Image src="/logo.jpeg" alt="vision.ai logo" width={32} height={32} />
+            <Image src="/vision_logo.jpg" alt="vision.ai logo" width={32} height={32} className="rounded-full"/>
             <span className="hidden font-bold sm:inline-block">
               vision.ai
             </span>
@@ -74,7 +74,7 @@ export function HeaderClient({ navLinks }: HeaderClientProps) {
             <SheetContent side="left">
               <div className="flex flex-col gap-6 p-4">
                 <Link href="/" className="flex items-center space-x-2">
-                  <Image src="/logo.jpeg" alt="vision.ai logo" width={32} height={32} />
+                  <Image src="/vision_logo.jpg" alt="vision.ai logo" width={32} height={32} className="rounded-full"/>
                   <span className="font-bold">vision.ai</span>
                 </Link>
                 <nav className="flex flex-col gap-4">
