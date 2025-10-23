@@ -64,8 +64,7 @@ export default async function Home() {
               </span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-200 md:text-xl">
-              Learn. Grow. Succeed.
-Empowering Students with AI to Shape the Future — Where Education Meets Innovation.
+              Learn. Grow. Succeed with AI to Shape the Future.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Button asChild size="lg">
