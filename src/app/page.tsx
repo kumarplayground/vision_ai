@@ -49,7 +49,7 @@ export default async function Home() {
         <div className="flex flex-col gap-16 md:gap-24">
           <section className="relative container mx-auto px-4 py-16 text-center sm:py-24">
             <Image
-              src="https://res.cloudinary.com/dvb1b2vgi/image/upload/vision_logo_vc5fql.jpg"
+              src="https://res.cloudinary.com/dvb1b2vgi/image/upload/bg_te1wo0.jpg"
               alt="Background"
               layout="fill"
               objectFit="cover"
