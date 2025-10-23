@@ -10,7 +10,7 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-12">
           <div className="md:col-span-6">
              <Link href="/" className="mb-4 flex items-center space-x-2 text-xl font-bold">
-              <Image src="/vision_logo.jpg" alt="vision.ai logo" width={32} height={32} className="rounded-full" />
+              <Image src="https://res.cloudinary.com/dvb1b2vgi/image/upload/vision_logo_vc5fql.jpg" alt="vision.ai logo" width={32} height={32} className="rounded-full" />
               <span className="text-white">vision.ai</span>
             </Link>
             <p className="mt-4 text-sm text-gray-300">
