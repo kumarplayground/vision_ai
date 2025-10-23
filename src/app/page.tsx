@@ -8,6 +8,7 @@ import { Footer } from "@/components/footer";
 import Job from "@/models/Job";
 import dbConnect from "@/lib/mongodb";
 import { unstable_noStore as noStore } from 'next/cache';
+import Image from "next/image";
 
 async function getLatestJobs() {
   noStore();
@@ -47,17 +48,22 @@ export default async function Home() {
       <main className="flex-1">
         <div className="flex flex-col gap-16 md:gap-24">
           <section className="relative container mx-auto px-4 py-16 text-center sm:py-24">
-            <div
-              className="absolute inset-0 -z-10 bg-radial-gradient(ellipse_at_center,var(--tw-gradient-stops)) from-primary to-primary/30 to-70% blur-3xl"
-              aria-hidden="true"
+            <Image
+              src="https://res.cloudinary.com/dvb1b2vgi/image/upload/vision_logo_vc5fql.jpg"
+              alt="Background"
+              layout="fill"
+              objectFit="cover"
+              className="absolute inset-0 -z-10"
+              data-ai-hint="background"
             />
-            <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+            <div className="absolute inset-0 -z-10 bg-black/50" />
+            <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl text-white">
               A Vision To Make{" "}
               <span className="bg-gradient-to-r from-blue-500 to-blue-400 bg-clip-text text-transparent">
                 India Smarter
               </span>
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg text-foreground/80 md:text-xl">
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-200 md:text-xl">
               Learn. Grow. Succeed.
 Empowering Students with AI to Shape the Future — Where Education Meets Innovation.
             </p>
