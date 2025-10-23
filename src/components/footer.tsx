@@ -25,7 +25,7 @@ export function Footer() {
                 <X className="h-6 w-6" />
                 <span className="sr-only">X</span>
               </a>
-              <a href="https://www.instagram.com/earnwithsuziie/?igsh=MTllMjhieTN4dHAxNQ%3D%3D&utm_source=qr#" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-primary">
+              <a href="https://www.instagram.com/learnwithsuzie?igsh=dGR5NHp0bml2d3Q5">
                 <Instagram className="h-6 w-6" />
                 <span className="sr-only">Instagram</span>
               </a>

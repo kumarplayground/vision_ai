@@ -58,12 +58,13 @@ export default async function Home() {
               </span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-foreground/80 md:text-xl">
-              Discover your next opportunity. Explore curated job listings and skill-enhancing courses designed for growth.
+              Learn. Grow. Succeed.
+Empowering Students with AI to Shape the Future — Where Education Meets Innovation.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Button asChild size="lg">
                 <Link href="/jobs">
-                  Explore Jobs <Briefcase className="ml-2 h-5 w-5" />
+                  Explore AI <Briefcase className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
               <Button asChild size="lg" variant="secondary">
@@ -78,10 +79,10 @@ export default async function Home() {
             <div className="container mx-auto px-4">
               <div className="text-center">
                 <h2 className="text-3xl font-bold tracking-tight">
-                  Trusted by leading companies
+                Trusted by Leading EdTech and AI Innovators.
                 </h2>
                 <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-                  Join thousands of active jobs listed by trusted companies.
+                Proudly Collaborated with Industry Leaders.
                 </p>
               </div>
               <div className="relative mt-12 w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]">
@@ -96,9 +97,9 @@ export default async function Home() {
 
           <section className="container mx-auto px-4 pb-16 sm:pb-24">
             <div className="relative text-center">
-              <h2 className="text-3xl font-bold tracking-tight">Latest Jobs</h2>
+              <h2 className="text-3xl font-bold tracking-tight">Explore AI</h2>
                <p className="mx-auto mt-2 max-w-2xl text-muted-foreground">
-                Explore our curated list of job openings from top companies.
+               Explore Our Latest AI Courses and Learning Opportunities.
               </p>
               <Button
                 asChild
