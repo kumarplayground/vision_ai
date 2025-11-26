@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Send, Bot, User } from 'lucide-react';
+import { Send, Bot, User, History, Plus, Trash2, Menu, X, Brain } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -18,6 +18,33 @@ interface Message {
   timestamp: Date;
 }
 
+interface ChatSession {
+  id: string;
+  title: string;
+  messages: Message[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface UserMemory {
+  name?: string;
+  preferences?: {
+    learningStyle?: string;
+    topics?: string[];
+    level?: string;
+  };
+  conversationContext?: {
+    lastTopic?: string;
+    goals?: string[];
+    achievements?: string[];
+  };
+  personalInfo?: {
+    profession?: string;
+    interests?: string[];
+    background?: string;
+  };
+}
+
 interface ChatInterfaceProps {
   onSendMessage?: (message: string) => Promise<string>;
   placeholder?: string;
@@ -29,12 +56,214 @@ export function ChatInterface({
   placeholder = "Type your message here...",
   welcomeMessage = "Hello! How can I help you today?"
 }: ChatInterfaceProps) {
+  const [sessions, setSessions] = useState<ChatSession[]>([]);
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [userMemory, setUserMemory] = useState<UserMemory>({});
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Load sessions from localStorage on mount
+  useEffect(() => {
+    const savedSessions = localStorage.getItem('chatSessions');
+    if (savedSessions) {
+      try {
+        const parsed = JSON.parse(savedSessions);
+        // Convert date strings back to Date objects
+        const sessionsWithDates = parsed.map((session: any) => ({
+          ...session,
+          createdAt: new Date(session.createdAt),
+          updatedAt: new Date(session.updatedAt),
+          messages: session.messages.map((msg: any) => ({
+            ...msg,
+            timestamp: new Date(msg.timestamp)
+          }))
+        }));
+        setSessions(sessionsWithDates);
+      } catch (error) {
+        console.error('Error loading sessions:', error);
+      }
+    }
+
+    // Load user memory
+    const savedMemory = localStorage.getItem('userMemory');
+    if (savedMemory) {
+      try {
+        setUserMemory(JSON.parse(savedMemory));
+      } catch (error) {
+        console.error('Error loading user memory:', error);
+      }
+    }
+  }, []);
+
+  // Save sessions to localStorage whenever they change
+  useEffect(() => {
+    if (sessions.length > 0) {
+      localStorage.setItem('chatSessions', JSON.stringify(sessions));
+    }
+  }, [sessions]);
+
+  // Save user memory to localStorage whenever it changes
+  useEffect(() => {
+    if (Object.keys(userMemory).length > 0) {
+      localStorage.setItem('userMemory', JSON.stringify(userMemory));
+    }
+  }, [userMemory]);
+
+  // Load current session messages
+  useEffect(() => {
+    if (currentSessionId) {
+      const session = sessions.find(s => s.id === currentSessionId);
+      if (session) {
+        setMessages(session.messages);
+      }
+    } else {
+      setMessages([]);
+    }
+  }, [currentSessionId, sessions]);
+
+  // Generate title from first user message
+  const generateTitle = (message: string): string => {
+    return message.length > 30 ? message.substring(0, 30) + '...' : message;
+  };
+
+  // Create new chat session
+  const createNewSession = () => {
+    const newSession: ChatSession = {
+      id: Date.now().toString(),
+      title: 'New Chat',
+      messages: [],
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    setSessions(prev => [newSession, ...prev]);
+    setCurrentSessionId(newSession.id);
+    setMessages([]);
+  };
+
+  // Delete a chat session
+  const deleteSession = (sessionId: string) => {
+    setSessions(prev => prev.filter(s => s.id !== sessionId));
+    if (currentSessionId === sessionId) {
+      setCurrentSessionId(null);
+      setMessages([]);
+    }
+  };
+
+  // Update current session with new messages
+  const updateCurrentSession = (newMessages: Message[]) => {
+    if (currentSessionId) {
+      setSessions(prev => prev.map(session => {
+        if (session.id === currentSessionId) {
+          // Update title if this is the first user message
+          const title = session.title === 'New Chat' && newMessages.length > 0
+            ? generateTitle(newMessages[0].content)
+            : session.title;
+          
+          return {
+            ...session,
+            title,
+            messages: newMessages,
+            updatedAt: new Date()
+          };
+        }
+        return session;
+      }));
+    }
+  };
+
+  // Extract and update user memory from conversation
+  const updateMemoryFromMessage = (userMessage: string, aiResponse: string) => {
+    const lowerMessage = userMessage.toLowerCase();
+    const lowerResponse = aiResponse.toLowerCase();
+    
+    const updates: Partial<UserMemory> = {};
+
+    // Extract name
+    if (lowerMessage.includes('my name is') || lowerMessage.includes('i am') || lowerMessage.includes("i'm")) {
+      const nameMatch = userMessage.match(/(?:my name is|i am|i'm)\s+([A-Z][a-z]+)/i);
+      if (nameMatch) {
+        updates.name = nameMatch[1];
+      }
+    }
+
+    // Extract profession
+    if (lowerMessage.includes('i work as') || lowerMessage.includes('i am a') || lowerMessage.includes('my job')) {
+      updates.personalInfo = {
+        ...userMemory.personalInfo,
+        profession: userMessage
+      };
+    }
+
+    // Extract interests
+    if (lowerMessage.includes('interested in') || lowerMessage.includes('like to learn')) {
+      const interests = userMemory.personalInfo?.interests || [];
+      updates.personalInfo = {
+        ...userMemory.personalInfo,
+        interests: [...interests, userMessage]
+      };
+    }
+
+    // Extract learning level
+    if (lowerMessage.includes('beginner') || lowerMessage.includes('intermediate') || lowerMessage.includes('advanced')) {
+      updates.preferences = {
+        ...userMemory.preferences,
+        level: lowerMessage.includes('beginner') ? 'beginner' : 
+               lowerMessage.includes('intermediate') ? 'intermediate' : 'advanced'
+      };
+    }
+
+    // Update last topic
+    if (userMessage.length > 10) {
+      updates.conversationContext = {
+        ...userMemory.conversationContext,
+        lastTopic: generateTitle(userMessage)
+      };
+    }
+
+    if (Object.keys(updates).length > 0) {
+      setUserMemory(prev => ({ ...prev, ...updates }));
+    }
+  };
+
+  // Build context string from memory for AI
+  const buildMemoryContext = (): string => {
+    const contextParts: string[] = [];
+    
+    if (userMemory.name) {
+      contextParts.push(`User's name: ${userMemory.name}`);
+    }
+    
+    if (userMemory.preferences?.level) {
+      contextParts.push(`Learning level: ${userMemory.preferences.level}`);
+    }
+    
+    if (userMemory.personalInfo?.profession) {
+      contextParts.push(`Profession: ${userMemory.personalInfo.profession}`);
+    }
+    
+    if (userMemory.conversationContext?.lastTopic) {
+      contextParts.push(`Previous topic: ${userMemory.conversationContext.lastTopic}`);
+    }
+    
+    if (userMemory.personalInfo?.interests && userMemory.personalInfo.interests.length > 0) {
+      contextParts.push(`Interests: ${userMemory.personalInfo.interests.slice(-3).join(', ')}`);
+    }
+
+    // Add recent messages from current session for context
+    if (messages.length > 0) {
+      const recentMessages = messages.slice(-4).map(m => 
+        `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content.substring(0, 100)}`
+      ).join('\n');
+      contextParts.push(`Recent conversation:\n${recentMessages}`);
+    }
+    
+    return contextParts.length > 0 ? contextParts.join('\n') : '';
+  };
 
   // Auto-scroll to bottom when new messages are added
   const scrollToBottom = () => {
@@ -60,6 +289,19 @@ export function ChatInterface({
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
+    // Create new session if none exists
+    if (!currentSessionId) {
+      const newSession: ChatSession = {
+        id: Date.now().toString(),
+        title: 'New Chat',
+        messages: [],
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      setSessions(prev => [newSession, ...prev]);
+      setCurrentSessionId(newSession.id);
+    }
+
     const userMessage: Message = {
       id: Date.now().toString(),
       content: input.trim(),
@@ -68,15 +310,19 @@ export function ChatInterface({
     };
 
     // Add user message
-    setMessages(prev => [...prev, userMessage]);
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
+    updateCurrentSession(updatedMessages);
+    
     const userInput = input.trim();
     setInput('');
     setIsLoading(true);
 
     try {
       // Call the onSendMessage function if provided
+      const memoryContext = buildMemoryContext();
       const response = onSendMessage 
-        ? await onSendMessage(userInput)
+        ? await onSendMessage(userInput + (memoryContext ? `\n\n[Context: ${memoryContext}]` : ''))
         : "I'm a demo chat interface. Please connect me to an AI service to provide real responses.";
 
       const assistantMessage: Message = {
@@ -86,7 +332,12 @@ export function ChatInterface({
         timestamp: new Date(),
       };
 
-      setMessages(prev => [...prev, assistantMessage]);
+      const finalMessages = [...updatedMessages, assistantMessage];
+      setMessages(finalMessages);
+      updateCurrentSession(finalMessages);
+      
+      // Update memory from this conversation
+      updateMemoryFromMessage(userInput, response);
     } catch (error) {
       console.error('Error sending message:', error);
       const errorMessage: Message = {
@@ -95,7 +346,9 @@ export function ChatInterface({
         role: 'assistant',
         timestamp: new Date(),
       };
-      setMessages(prev => [...prev, errorMessage]);
+      const finalMessages = [...updatedMessages, errorMessage];
+      setMessages(finalMessages);
+      updateCurrentSession(finalMessages);
     } finally {
       setIsLoading(false);
     }
@@ -104,9 +357,131 @@ export function ChatInterface({
   const hasMessages = messages.length > 0;
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
-      {/* Chat Messages Area */}
+    <div className="flex h-full overflow-hidden">
+      {/* Sidebar - Recent Chats */}
       <div className={cn(
+        "flex-shrink-0 bg-card border-r transition-all duration-300",
+        isSidebarOpen ? "w-64" : "w-0"
+      )}>
+        {isSidebarOpen && (
+          <div className="flex flex-col h-full">
+            {/* Sidebar Header */}
+            <div className="p-4 border-b flex items-center justify-between">
+              <h2 className="font-semibold flex items-center gap-2">
+                <History className="w-4 h-4" />
+                Recent Chats
+              </h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={createNewSession}
+                title="New Chat"
+              >
+                <Plus className="w-4 h-4" />
+              </Button>
+            </div>
+
+            {/* Sessions List */}
+            <div className="flex-1 overflow-y-auto p-2">
+              {sessions.length === 0 ? (
+                <div className="text-center text-sm text-muted-foreground p-4">
+                  No chat history yet
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  {sessions.map((session) => (
+                    <div
+                      key={session.id}
+                      className={cn(
+                        "group relative p-3 rounded-lg cursor-pointer hover:bg-accent transition-colors",
+                        currentSessionId === session.id && "bg-accent"
+                      )}
+                      onClick={() => setCurrentSessionId(session.id)}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium truncate">
+                            {session.title}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {session.messages.length} messages
+                          </p>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteSession(session.id);
+                          }}
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Main Chat Area */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Toggle Sidebar Button */}
+        <div className="flex-shrink-0 p-2 border-b bg-background flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              title={isSidebarOpen ? "Hide sidebar" : "Show sidebar"}
+            >
+              {isSidebarOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            </Button>
+          </div>
+
+          {/* Memory Display - Always Visible */}
+          {Object.keys(userMemory).length > 0 && (
+            <div className="flex items-center gap-4">
+              <div className="bg-muted/50 border rounded-lg px-3 py-1.5 flex items-center gap-3 text-xs">
+                <Brain className="w-4 h-4 text-primary" />
+                <div className="flex items-center gap-3">
+                  {userMemory.name && (
+                    <span className="font-medium">{userMemory.name}</span>
+                  )}
+                  {userMemory.preferences?.level && (
+                    <span className="text-muted-foreground">Level: {userMemory.preferences.level}</span>
+                  )}
+                  {userMemory.conversationContext?.lastTopic && (
+                    <span className="text-muted-foreground max-w-[200px] truncate">
+                      Topic: {userMemory.conversationContext.lastTopic}
+                    </span>
+                  )}
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-5 w-5 ml-2"
+                  onClick={() => {
+                    if (confirm('Clear all AI memory? This cannot be undone.')) {
+                      setUserMemory({});
+                      localStorage.removeItem('userMemory');
+                    }
+                  }}
+                  title="Clear memory"
+                >
+                  <Trash2 className="w-3 h-3" />
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Chat Messages Area */}
+        <div className={cn(
         "flex-1 overflow-hidden transition-all duration-500 ease-in-out",
         hasMessages ? "flex flex-col" : "flex items-center justify-center"
       )}>
@@ -280,6 +655,7 @@ export function ChatInterface({
             Press Enter to send, Shift + Enter for new line
           </p>
         </div>
+      </div>
       </div>
     </div>
   );
