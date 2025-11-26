@@ -86,7 +86,7 @@ export default async function Home() {
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Button asChild size="lg">
-                <Link href="/jobs">
+                <Link href="/chat">
                   Explore AI <Briefcase className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
