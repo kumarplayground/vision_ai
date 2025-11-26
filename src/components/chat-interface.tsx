@@ -442,42 +442,6 @@ export function ChatInterface({
               {isSidebarOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </Button>
           </div>
-
-          {/* Memory Display - Always Visible */}
-          {Object.keys(userMemory).length > 0 && (
-            <div className="flex items-center gap-4">
-              <div className="bg-muted/50 border rounded-lg px-3 py-1.5 flex items-center gap-3 text-xs">
-                <Brain className="w-4 h-4 text-primary" />
-                <div className="flex items-center gap-3">
-                  {userMemory.name && (
-                    <span className="font-medium">{userMemory.name}</span>
-                  )}
-                  {userMemory.preferences?.level && (
-                    <span className="text-muted-foreground">Level: {userMemory.preferences.level}</span>
-                  )}
-                  {userMemory.conversationContext?.lastTopic && (
-                    <span className="text-muted-foreground max-w-[200px] truncate">
-                      Topic: {userMemory.conversationContext.lastTopic}
-                    </span>
-                  )}
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-5 w-5 ml-2"
-                  onClick={() => {
-                    if (confirm('Clear all AI memory? This cannot be undone.')) {
-                      setUserMemory({});
-                      localStorage.removeItem('userMemory');
-                    }
-                  }}
-                  title="Clear memory"
-                >
-                  <Trash2 className="w-3 h-3" />
-                </Button>
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Chat Messages Area */}
