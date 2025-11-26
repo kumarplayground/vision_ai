@@ -367,10 +367,11 @@ export function ChatInterface({
           <div className="flex flex-col h-full">
             {/* Sidebar Header */}
             <div className="p-4 border-b flex items-center justify-between">
-              <h2 className="font-semibold flex items-center gap-2">
-                <History className="w-4 h-4" />
-                Recent Chats
-              </h2>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">VI</span>
+                </div>
+              </div>
               <Button
                 variant="ghost"
                 size="icon"
@@ -423,6 +424,26 @@ export function ChatInterface({
                   ))}
                 </div>
               )}
+            </div>
+
+            {/* User Profile Section */}
+            <div className="flex-shrink-0 border-t p-3 bg-card">
+              <div className="flex items-center gap-3">
+                <Avatar className="w-10 h-10">
+                  <AvatarImage src="/user-avatar.png" alt={userMemory.name || "User"} />
+                  <AvatarFallback className="bg-gradient-to-br from-blue-500 to-blue-600 text-white">
+                    {userMemory.name ? userMemory.name.charAt(0).toUpperCase() : 'U'}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">
+                    {userMemory.name || 'User'}
+                  </p>
+                  <div className="flex items-center gap-1">
+                    <span className="text-xs text-muted-foreground">Free Plan</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}
