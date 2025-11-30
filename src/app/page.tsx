@@ -2,22 +2,23 @@
 import Link from "next/link";
 import { ArrowRight, Briefcase, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { JobCard } from "@/components/job-card";
+import { CourseCard } from "@/components/course-card";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import Job from "@/models/Job";
+import { OmniSearch } from "@/components/omni-search";
+import Course from "@/models/Course";
 import dbConnect from "@/lib/mongodb";
 import { unstable_noStore as noStore } from 'next/cache';
 import Image from "next/image";
 
-async function getLatestJobs() {
+async function getLatestCourses() {
   noStore();
   try {
     await dbConnect();
-    const jobs = await Job.find({}).sort({ createdAt: -1 }).limit(6);
-    return JSON.parse(JSON.stringify(jobs));
+    const courses = await Course.find({}).sort({ createdAt: -1 }).limit(6);
+    return JSON.parse(JSON.stringify(courses));
   } catch (error) {
-    console.error("Failed to fetch latest jobs:", error);
+    console.error("Failed to fetch latest courses:", error);
     return [];
   }
 }
@@ -58,7 +59,7 @@ const companies = [
 ];
 
 export default async function Home() {
-  const latestJobs = await getLatestJobs();
+  const latestCourses = await getLatestCourses();
 
   return (
     <div className="flex flex-col min-h-dvh">
@@ -84,17 +85,8 @@ export default async function Home() {
             <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-200 md:text-xl">
               Learn. Grow. Succeed with AI to Shape the Future.
             </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-4">
-              <Button asChild size="lg">
-                <Link href="/chat">
-                  Explore AI <Briefcase className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="secondary">
-                <Link href="/courses">
-                  Browse Courses <BookOpen className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
+            <div className="mt-8 w-full px-4">
+              <OmniSearch />
             </div>
           </section>
 
@@ -129,19 +121,19 @@ export default async function Home() {
                 variant="link"
                 className="text-primary absolute -top-1 right-0 hidden sm:inline-flex"
               >
-                <Link href="/jobs">
+                <Link href="/courses">
                   View all <ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
             </div>
             <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {latestJobs.map((job: any) => (
-                <JobCard key={job._id} job={job} />
+              {latestCourses.map((course: any) => (
+                <CourseCard key={course._id} course={course} />
               ))}
             </div>
             <div className="mt-12 text-center">
               <Button asChild size="lg" variant="secondary">
-                <Link href="/jobs">Load More Jobs</Link>
+                <Link href="/courses">Load More Courses</Link>
               </Button>
             </div>
           </section>

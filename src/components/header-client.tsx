@@ -38,7 +38,7 @@ export function HeaderClient({ navLinks }: HeaderClientProps) {
         }
       )}
     >
-      <div className="container flex h-14 items-center">
+      <div className="container mx-auto max-w-full px-4 flex h-14 items-center">
         <div className="mr-4 hidden md:flex">
           <Link href="/" className="mr-6 flex items-center space-x-2">
             <Image src="https://res.cloudinary.com/dvb1b2vgi/image/upload/vision_logo_vc5fql.jpg" alt="vision.ai logo" width={32} height={32} className="rounded-full"/>
