@@ -42,7 +42,7 @@ interface ModelsLabResponse {
 export async function chatWithAI(input: ChatInput): Promise<ChatOutput> {
   const endpointUrl = 'https://modelslab.com/api/v7/llm/chat/completions';
   
-  const apiKey = process.env.MODELSLAB_API_KEY;
+  const apiKey = process.env.MODELSLAB_API_KEY || 'COsrqkYCDBMx1Iwk6bEjlWGEyX9EkKG4HmbCuKyLwZlurrbczK3upUimGPhn';
   
   if (!apiKey) {
     throw new Error('ModelsLab API key is not configured');
