@@ -67,15 +67,6 @@ export default async function Home() {
       <main className="flex-1">
         <div className="flex flex-col gap-16 md:gap-24">
           <section className="relative container mx-auto px-4 py-16 text-center sm:py-24">
-            <Image
-              src="https://res.cloudinary.com/dvb1b2vgi/image/upload/bg1_up8iob.jpg"
-              alt="Background"
-              layout="fill"
-              objectFit="cover"
-              className="absolute inset-0 -z-10"
-              data-ai-hint="background"
-            />
-            <div className="absolute inset-0 -z-10 bg-black/50" />
             <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl text-white">
               A Vision To Make{" "}
               <span className="bg-gradient-to-r from-blue-500 to-blue-400 bg-clip-text text-transparent">
@@ -90,7 +81,7 @@ export default async function Home() {
             </div>
           </section>
 
-          <section className="py-12 sm:py-16 bg-card">
+          <section className="py-12 sm:py-16">
             <div className="container mx-auto px-4">
               <div className="text-center">
                 <h2 className="text-3xl font-bold tracking-tight">

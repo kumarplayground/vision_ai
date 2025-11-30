@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
+import { BackgroundAnimation } from "@/components/background-animation";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -32,11 +33,12 @@ export default function RootLayout({
       </head>
       <body
         className={cn(
-          "min-h-screen bg-background font-body antialiased",
+          "min-h-screen font-body antialiased text-white",
           "transition-colors duration-300"
         )}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <BackgroundAnimation />
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           {children}
         </ThemeProvider>
         <Toaster />
