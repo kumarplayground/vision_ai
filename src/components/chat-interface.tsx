@@ -4,8 +4,14 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Send, Bot, User, History, Plus, Trash2, Menu, X, Brain } from 'lucide-react';
+import { Send, Bot, User, History, Plus, Trash2, Menu, X, Brain, Image as ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
@@ -47,12 +53,14 @@ interface UserMemory {
 
 interface ChatInterfaceProps {
   onSendMessage?: (message: string) => Promise<string>;
+  onGenerateImage?: (prompt: string) => Promise<string>;
   placeholder?: string;
   welcomeMessage?: string;
 }
 
 export function ChatInterface({ 
   onSendMessage, 
+  onGenerateImage,
   placeholder = "Type your message here...",
   welcomeMessage = "Hello! How can I help you today?"
 }: ChatInterfaceProps) {
@@ -62,6 +70,7 @@ export function ChatInterface({
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isImageMode, setIsImageMode] = useState(false);
   const [userMemory, setUserMemory] = useState<UserMemory>({});
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -317,13 +326,25 @@ export function ChatInterface({
     const userInput = input.trim();
     setInput('');
     setIsLoading(true);
+    
+    // Store current mode to use in request
+    const wasImageMode = isImageMode;
+    // Reset image mode after sending
+    if (wasImageMode) setIsImageMode(false);
 
     try {
-      // Call the onSendMessage function if provided
-      const memoryContext = buildMemoryContext();
-      const response = onSendMessage 
-        ? await onSendMessage(userInput + (memoryContext ? `\n\n[Context: ${memoryContext}]` : ''))
-        : "I'm a demo chat interface. Please connect me to an AI service to provide real responses.";
+      let response: string;
+
+      if (wasImageMode && onGenerateImage) {
+        const imageUrl = await onGenerateImage(userInput);
+        response = `![Generated Image](${imageUrl})`;
+      } else {
+        // Call the onSendMessage function if provided
+        const memoryContext = buildMemoryContext();
+        response = onSendMessage 
+          ? await onSendMessage(userInput + (memoryContext ? `\n\n[Context: ${memoryContext}]` : ''))
+          : "I'm a demo chat interface. Please connect me to an AI service to provide real responses.";
+      }
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -612,14 +633,36 @@ export function ChatInterface({
       {/* Input Area */}
       <div className="flex-shrink-0 border-t bg-background">
         <div className="max-w-4xl mx-auto p-4">
-          <form onSubmit={handleSubmit} className="flex gap-2">
+          <form onSubmit={handleSubmit} className="flex gap-2 items-end">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  type="button"
+                  variant={isImageMode ? "default" : "outline"}
+                  size="icon"
+                  className={cn("h-[44px] w-[44px] flex-shrink-0", isImageMode && "bg-purple-600 hover:bg-purple-700")}
+                >
+                  <Plus className={cn("w-4 h-4 transition-transform", isImageMode && "rotate-45")} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                <DropdownMenuItem onClick={() => setIsImageMode(!isImageMode)}>
+                  <ImageIcon className="w-4 h-4 mr-2" />
+                  {isImageMode ? 'Switch to Chat' : 'Generate Image'}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             <Input
               ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={placeholder}
+              placeholder={isImageMode ? "Describe the image you want to generate..." : placeholder}
               disabled={isLoading}
-              className="flex-1 min-h-[44px] resize-none"
+              className={cn(
+                "flex-1 min-h-[44px] resize-none",
+                isImageMode && "border-purple-600 focus-visible:ring-purple-600"
+              )}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
@@ -631,13 +674,16 @@ export function ChatInterface({
               type="submit" 
               disabled={!input.trim() || isLoading}
               size="icon"
-              className="h-[44px] w-[44px]"
+              className={cn(
+                "h-[44px] w-[44px]",
+                isImageMode && "bg-purple-600 hover:bg-purple-700"
+              )}
             >
               <Send className="w-4 h-4" />
             </Button>
           </form>
           <p className="text-xs text-muted-foreground text-center mt-2">
-            Press Enter to send, Shift + Enter for new line
+            {isImageMode ? 'Enter a detailed prompt to generate an image' : 'Press Enter to send, Shift + Enter for new line'}
           </p>
         </div>
       </div>

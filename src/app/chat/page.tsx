@@ -1,5 +1,6 @@
 import { ChatInterface } from '@/components/chat-interface';
 import { chatWithAI } from '@/ai/flows/chat';
+import { generateImage } from '@/ai/flows/image-generation';
 
 async function handleSendMessage(message: string): Promise<string> {
   'use server';
@@ -13,11 +14,24 @@ async function handleSendMessage(message: string): Promise<string> {
   }
 }
 
+async function handleGenerateImage(prompt: string): Promise<string> {
+  'use server';
+  
+  try {
+    const result = await generateImage({ prompt });
+    return result.imageUrl;
+  } catch (error) {
+    console.error('Error generating image:', error);
+    throw new Error("Failed to generate image. Please try again.");
+  }
+}
+
 export default function ChatPage() {
   return (
     <div className="flex flex-col h-screen">
       <ChatInterface 
         onSendMessage={handleSendMessage}
+        onGenerateImage={handleGenerateImage}
         placeholder="Ask me anything about AI, careers, or courses..."
         welcomeMessage="I'm here to help you with AI learning, career guidance, and course recommendations!"
       />
