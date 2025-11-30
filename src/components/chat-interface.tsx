@@ -319,7 +319,6 @@ export function ChatInterface({
     // Add user message
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
-    updateCurrentSession(updatedMessages);
     
     const userInput = input.trim();
     setInput('');
