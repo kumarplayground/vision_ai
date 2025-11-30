@@ -56,13 +56,15 @@ interface ChatInterfaceProps {
   onGenerateImage?: (prompt: string) => Promise<string>;
   placeholder?: string;
   welcomeMessage?: string;
+  initialMessage?: string;
 }
 
 export function ChatInterface({ 
   onSendMessage, 
   onGenerateImage,
   placeholder = "Type your message here...",
-  welcomeMessage = "Hello! How can I help you today?"
+  welcomeMessage = "Hello! How can I help you today?",
+  initialMessage
 }: ChatInterfaceProps) {
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
@@ -75,6 +77,7 @@ export function ChatInterface({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const hasSentInitialMessage = useRef(false);
 
   // Load sessions from localStorage on mount
   useEffect(() => {
@@ -292,9 +295,8 @@ export function ChatInterface({
     inputRef.current?.focus();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim() || isLoading) return;
+  const sendMessage = async (text: string, isImage: boolean) => {
+    if (!text.trim() || isLoading) return;
 
     // Create new session if none exists
     if (!currentSessionId) {
@@ -311,7 +313,7 @@ export function ChatInterface({
 
     const userMessage: Message = {
       id: Date.now().toString(),
-      content: input.trim(),
+      content: text.trim(),
       role: 'user',
       timestamp: new Date(),
     };
@@ -320,14 +322,11 @@ export function ChatInterface({
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
     
-    const userInput = input.trim();
     setInput('');
     setIsLoading(true);
     
-    // Store current mode to use in request
-    const wasImageMode = isImageMode;
-    // Reset image mode after sending
-    if (wasImageMode) setIsImageMode(false);
+    // Reset image mode after sending if it was active
+    if (isImage) setIsImageMode(false);
 
     // Determine active session ID
     let activeSessionId = currentSessionId;
@@ -352,14 +351,14 @@ export function ChatInterface({
     try {
       let response: string;
 
-      if (wasImageMode && onGenerateImage) {
-        const imageUrl = await onGenerateImage(userInput);
+      if (isImage && onGenerateImage) {
+        const imageUrl = await onGenerateImage(text.trim());
         response = `![Generated Image](${imageUrl})`;
       } else {
         // Call the onSendMessage function if provided
         const memoryContext = buildMemoryContext();
         response = onSendMessage 
-          ? await onSendMessage(userInput + (memoryContext ? `\n\n[Context: ${memoryContext}]` : ''))
+          ? await onSendMessage(text.trim() + (memoryContext ? `\n\n[Context: ${memoryContext}]` : ''))
           : "I'm a demo chat interface. Please connect me to an AI service to provide real responses.";
       }
 
@@ -379,7 +378,7 @@ export function ChatInterface({
       }
       
       // Update memory from this conversation
-      updateMemoryFromMessage(userInput, response);
+      updateMemoryFromMessage(text.trim(), response);
     } catch (error) {
       console.error('Error sending message:', error);
       const errorMessage: Message = {
@@ -398,6 +397,19 @@ export function ChatInterface({
       setIsLoading(false);
     }
   };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await sendMessage(input, isImageMode);
+  };
+
+  // Handle initial message
+  useEffect(() => {
+    if (initialMessage && !hasSentInitialMessage.current) {
+      hasSentInitialMessage.current = true;
+      sendMessage(initialMessage, false);
+    }
+  }, [initialMessage]);
 
   const hasMessages = messages.length > 0;
 

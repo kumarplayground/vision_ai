@@ -26,12 +26,20 @@ async function handleGenerateImage(prompt: string): Promise<string> {
   }
 }
 
-export default function ChatPage() {
+export default async function ChatPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+  const resolvedSearchParams = await searchParams;
+  const initialQuery = typeof resolvedSearchParams.q === 'string' ? resolvedSearchParams.q : undefined;
+
   return (
     <div className="flex flex-col h-screen">
       <ChatInterface 
         onSendMessage={handleSendMessage}
         onGenerateImage={handleGenerateImage}
+        initialMessage={initialQuery}
         placeholder="Ask me anything about AI, careers, or courses..."
         welcomeMessage="I'm here to help you with AI learning, career guidance, and course recommendations!"
       />

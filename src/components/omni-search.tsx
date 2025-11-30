@@ -90,7 +90,7 @@ export function OmniSearch() {
         </form>
         
         {/* Suggestions / Quick Links (Visible only when focused) */}
-        {isFocused && (
+        {/* {isFocused && (
             <div className="absolute top-full left-0 right-0 mt-4 bg-card/95 backdrop-blur-xl border border-border rounded-2xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2">
                 <div className="p-2">
                     <div className="text-xs font-semibold text-muted-foreground px-3 py-2 uppercase tracking-wider">Quick Actions</div>
@@ -116,7 +116,7 @@ export function OmniSearch() {
                     </button>
                 </div>
             </div>
-        )}
+        )} */}
       </div>
     </>
   )

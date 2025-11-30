@@ -87,9 +87,9 @@ export default async function Home() {
                 <h2 className="text-3xl font-bold tracking-tight">
                 Trusted by Leading EdTech and AI Innovators.
                 </h2>
-                <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
+                {/* <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
                 Proudly Collaborated with Industry Leaders.
-                </p>
+                </p> */}
               </div>
               <div className="relative mt-12 w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]">
                 <ul className="flex w-max animate-marquee items-center [--duration:30s] hover:[animation-play-state:paused]">
