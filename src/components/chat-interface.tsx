@@ -164,25 +164,23 @@ export function ChatInterface({
   };
 
   // Update current session with new messages
-  const updateCurrentSession = (newMessages: Message[]) => {
-    if (currentSessionId) {
-      setSessions(prev => prev.map(session => {
-        if (session.id === currentSessionId) {
-          // Update title if this is the first user message
-          const title = session.title === 'New Chat' && newMessages.length > 0
-            ? generateTitle(newMessages[0].content)
-            : session.title;
-          
-          return {
-            ...session,
-            title,
-            messages: newMessages,
-            updatedAt: new Date()
-          };
-        }
-        return session;
-      }));
-    }
+  const updateSessionMessages = (sessionId: string, newMessages: Message[]) => {
+    setSessions(prev => prev.map(session => {
+      if (session.id === sessionId) {
+        // Update title if this is the first user message
+        const title = session.title === 'New Chat' && newMessages.length > 0
+          ? generateTitle(newMessages[0].content)
+          : session.title;
+        
+        return {
+          ...session,
+          title,
+          messages: newMessages,
+          updatedAt: new Date()
+        };
+      }
+      return session;
+    }));
   };
 
   // Extract and update user memory from conversation
@@ -332,6 +330,26 @@ export function ChatInterface({
     // Reset image mode after sending
     if (wasImageMode) setIsImageMode(false);
 
+    // Determine active session ID
+    let activeSessionId = currentSessionId;
+    if (!activeSessionId) {
+      activeSessionId = Date.now().toString();
+      setCurrentSessionId(activeSessionId);
+      
+      // Create new session immediately
+      const newSession: ChatSession = {
+        id: activeSessionId,
+        title: 'New Chat',
+        messages: updatedMessages,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      setSessions(prev => [newSession, ...prev]);
+    } else {
+      // Update existing session
+      updateSessionMessages(activeSessionId, updatedMessages);
+    }
+
     try {
       let response: string;
 
@@ -355,7 +373,11 @@ export function ChatInterface({
 
       const finalMessages = [...updatedMessages, assistantMessage];
       setMessages(finalMessages);
-      updateCurrentSession(finalMessages);
+      
+      // Update session with final messages
+      if (activeSessionId) {
+        updateSessionMessages(activeSessionId, finalMessages);
+      }
       
       // Update memory from this conversation
       updateMemoryFromMessage(userInput, response);
@@ -369,7 +391,10 @@ export function ChatInterface({
       };
       const finalMessages = [...updatedMessages, errorMessage];
       setMessages(finalMessages);
-      updateCurrentSession(finalMessages);
+      
+      if (activeSessionId) {
+        updateSessionMessages(activeSessionId, finalMessages);
+      }
     } finally {
       setIsLoading(false);
     }
