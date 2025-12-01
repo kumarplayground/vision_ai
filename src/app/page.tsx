@@ -37,10 +37,6 @@ const companies = [
     logo: <Image src="https://res.cloudinary.com/dvb1b2vgi/image/upload/v1762154044/IMG_2908_twmnr6.jpg" alt="Partner 1" fill className="object-contain rounded-lg" sizes="160px" /> 
   },
   { 
-    name: 'Partner 2', 
-    logo: <Image src="https://res.cloudinary.com/dvb1b2vgi/image/upload/v1762154043/IMG_2905_cjgq76.jpg" alt="Partner 2" fill className="object-contain rounded-lg" sizes="160px" /> 
-  },
-  { 
     name: 'Partner 3', 
     logo: <Image src="https://res.cloudinary.com/dvb1b2vgi/image/upload/v1762154043/IMG_2910_qbkeet.jpg" alt="Partner 3" fill className="object-contain rounded-lg" sizes="160px" /> 
   },

@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
 import { BackgroundAnimation } from "@/components/background-animation";
+import Script from "next/script";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -42,6 +43,19 @@ export default function RootLayout({
           {children}
         </ThemeProvider>
         <Toaster />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-K7C7MDQRP9"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-K7C7MDQRP9');
+          `}
+        </Script>
       </body>
     </html>
   );

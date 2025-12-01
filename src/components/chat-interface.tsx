@@ -678,7 +678,7 @@ export function ChatInterface({
                   size="icon"
                   className={cn("h-[44px] w-[44px] flex-shrink-0", isImageMode && "bg-purple-600 hover:bg-purple-700")}
                 >
-                  <Plus className={cn("w-4 h-4 transition-transform", isImageMode && "rotate-45")} />
+                  <ImageIcon className={cn("w-4 h-4 transition-transform", isImageMode && "rotate-45")} />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start">
