@@ -9,7 +9,6 @@ import { OmniSearch } from "@/components/omni-search";
 import Course from "@/models/Course";
 import dbConnect from "@/lib/mongodb";
 import { unstable_noStore as noStore } from 'next/cache';
-import Image from "next/image";
 
 async function getLatestCourses() {
   noStore();
@@ -22,37 +21,6 @@ async function getLatestCourses() {
     return [];
   }
 }
-
-const CompanyLogo = ({ children }: { children: React.ReactNode }) => (
-  <li className="flex-shrink-0">
-    <div className="relative h-28 w-40 mx-4 flex items-center justify-center">
-      {children}
-    </div>
-  </li>
-);
-
-const companies = [
-  { 
-    name: 'Partner 1', 
-    logo: <Image src="https://res.cloudinary.com/dvb1b2vgi/image/upload/v1762154044/IMG_2908_twmnr6.jpg" alt="Partner 1" fill className="object-contain rounded-lg" sizes="160px" /> 
-  },
-  { 
-    name: 'Partner 3', 
-    logo: <Image src="https://res.cloudinary.com/dvb1b2vgi/image/upload/v1762154043/IMG_2910_qbkeet.jpg" alt="Partner 3" fill className="object-contain rounded-lg" sizes="160px" /> 
-  },
-  { 
-    name: 'Partner 4', 
-    logo: <Image src="https://res.cloudinary.com/dvb1b2vgi/image/upload/v1762154043/IMG_2907_i62r1f.jpg" alt="Partner 4" fill className="object-contain rounded-lg" sizes="160px" /> 
-  },
-  { 
-    name: 'Partner 5', 
-    logo: <Image src="https://res.cloudinary.com/dvb1b2vgi/image/upload/v1762154042/IMG_2900_to3nx8.jpg" alt="Partner 5" fill className="object-contain rounded-lg" sizes="160px" /> 
-  },
-  { 
-    name: 'Partner 6', 
-    logo: <Image src="https://res.cloudinary.com/dvb1b2vgi/image/upload/v1762154042/IMG_2902_fwydth.jpg" alt="Partner 6" fill className="object-contain rounded-lg" /> 
-  }
-];
 
 export default async function Home() {
   const latestCourses = await getLatestCourses();
@@ -74,26 +42,6 @@ export default async function Home() {
             </p>
             <div className="mt-8 w-full px-4">
               <OmniSearch />
-            </div>
-          </section>
-
-          <section className="py-12 sm:py-16">
-            <div className="container mx-auto px-4">
-              <div className="text-center">
-                <h2 className="text-3xl font-bold tracking-tight">
-                Trusted by Leading EdTech and AI Innovators.
-                </h2>
-                {/* <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-                Proudly Collaborated with Industry Leaders.
-                </p> */}
-              </div>
-              <div className="relative mt-12 w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]">
-                <ul className="flex w-max animate-marquee items-center [--duration:30s] hover:[animation-play-state:paused]">
-                  {[...companies, ...companies].map((company, index) => (
-                    <CompanyLogo key={index}>{company.logo}</CompanyLogo>
-                  ))}
-                </ul>
-              </div>
             </div>
           </section>
 

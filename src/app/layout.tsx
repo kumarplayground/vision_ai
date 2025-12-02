@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="https://res.cloudinary.com/dvb1b2vgi/image/upload/vision_logo_vc5fql.jpg" type="image/jpeg" sizes="any" />
+        <link rel="icon" href="/vision_fav.ico" sizes="any" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
