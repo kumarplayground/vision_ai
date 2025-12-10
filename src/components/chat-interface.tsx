@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Send, Bot, User, History, Plus, Trash2, Menu, X, Brain, Image as ImageIcon } from 'lucide-react';
+import { Send, Bot, User, History, Plus, Trash2, Menu, X, Brain, Image as ImageIcon, Paperclip } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   DropdownMenu,
@@ -22,6 +22,11 @@ interface Message {
   content: string;
   role: 'user' | 'assistant';
   timestamp: Date;
+  attachment?: {
+    preview: string;
+    type: 'image' | 'file';
+    name?: string;
+  };
 }
 
 interface ChatSession {
@@ -52,7 +57,7 @@ interface UserMemory {
 }
 
 interface ChatInterfaceProps {
-  onSendMessage?: (message: string) => Promise<string>;
+  onSendMessage?: (message: string, attachment?: { base64: string; mimeType: string }) => Promise<string>;
   onGenerateImage?: (prompt: string) => Promise<string>;
   placeholder?: string;
   welcomeMessage?: string;
@@ -74,9 +79,11 @@ export function ChatInterface({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isImageMode, setIsImageMode] = useState(false);
   const [userMemory, setUserMemory] = useState<UserMemory>({});
+  const [attachment, setAttachment] = useState<{ file: File; preview: string; base64: string; mimeType: string } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const hasSentInitialMessage = useRef(false);
 
   // Load sessions from localStorage on mount
@@ -295,6 +302,26 @@ export function ChatInterface({
     inputRef.current?.focus();
   }, []);
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64 = e.target?.result as string;
+        // Extract base64 data (remove data:image/jpeg;base64, prefix)
+        const base64Data = base64.split(',')[1];
+        
+        setAttachment({
+          file,
+          preview: base64, // Use full data URI for preview
+          base64: base64Data,
+          mimeType: file.type
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const sendMessage = async (text: string, isImage: boolean) => {
     if (!text.trim() || isLoading) return;
 
@@ -311,11 +338,18 @@ export function ChatInterface({
       setCurrentSessionId(newSession.id);
     }
 
+    const currentAttachment = attachment;
+
     const userMessage: Message = {
       id: Date.now().toString(),
       content: text.trim(),
       role: 'user',
       timestamp: new Date(),
+      attachment: currentAttachment ? {
+        preview: currentAttachment.preview,
+        type: currentAttachment.mimeType.startsWith('image/') ? 'image' : 'file',
+        name: currentAttachment.file.name
+      } : undefined
     };
 
     // Add user message
@@ -323,6 +357,8 @@ export function ChatInterface({
     setMessages(updatedMessages);
     
     setInput('');
+    setAttachment(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
     setIsLoading(true);
     
     // Reset image mode after sending if it was active
@@ -357,8 +393,10 @@ export function ChatInterface({
       } else {
         // Call the onSendMessage function if provided
         const memoryContext = buildMemoryContext();
+        const attachmentData = currentAttachment ? { base64: currentAttachment.base64, mimeType: currentAttachment.mimeType } : undefined;
+        
         response = onSendMessage 
-          ? await onSendMessage(text.trim() + (memoryContext ? `\n\n[Context: ${memoryContext}]` : ''))
+          ? await onSendMessage(text.trim() + (memoryContext ? `\n\n[Context: ${memoryContext}]` : ''), attachmentData)
           : "I'm a demo chat interface. Please connect me to an AI service to provide real responses.";
       }
 
@@ -588,6 +626,22 @@ export function ChatInterface({
                         : "bg-muted"
                     )}
                   >
+                    {message.attachment && (
+                      <div className="mb-2">
+                        {message.attachment.type === 'image' ? (
+                          <img 
+                            src={message.attachment.preview} 
+                            alt="Attachment" 
+                            className="max-w-full rounded-lg max-h-60 object-cover"
+                          />
+                        ) : (
+                          <div className="flex items-center gap-2 p-2 bg-black/10 rounded-lg">
+                            <Paperclip className="w-4 h-4" />
+                            <span className="text-sm truncate max-w-[200px]">{message.attachment.name}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
                     {message.role === 'user' ? (
                       <p className="m-0 whitespace-pre-wrap text-white">
                         {message.content}
@@ -611,9 +665,20 @@ export function ChatInterface({
                             },
                             pre({ children, ...props }: any) {
                               return (
-                                <pre className="overflow-x-auto rounded-md bg-gray-900 p-4 my-2" {...props}>
-                                  {children}
-                                </pre>
+                                <div className="overflow-x-auto w-full my-2 rounded-md bg-gray-900">
+                                  <pre className="p-4" {...props}>
+                                    {children}
+                                  </pre>
+                                </div>
+                              );
+                            },
+                            table({ children, ...props }: any) {
+                              return (
+                                <div className="overflow-x-auto my-2 w-full">
+                                  <table className="min-w-full border-collapse border border-border" {...props}>
+                                    {children}
+                                  </table>
+                                </div>
                               );
                             },
                             a({ href, children, ...props }: any) {
@@ -669,7 +734,47 @@ export function ChatInterface({
       {/* Input Area */}
       <div className="flex-shrink-0 border-t bg-background">
         <div className="max-w-4xl mx-auto p-4">
+          {attachment && (
+            <div className="mb-2 relative inline-block">
+              <div className="relative w-20 h-20 rounded-lg overflow-hidden border bg-muted">
+                {attachment.mimeType.startsWith('image/') ? (
+                  <img src={attachment.preview} alt="Preview" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="flex items-center justify-center w-full h-full text-xs text-center p-1 break-all">
+                    {attachment.file.name}
+                  </div>
+                )}
+              </div>
+              <button
+                onClick={() => {
+                  setAttachment(null);
+                  if (fileInputRef.current) fileInputRef.current.value = '';
+                }}
+                className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 hover:bg-destructive/90"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="flex gap-2 items-end">
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              onChange={handleFileSelect}
+              accept="image/*,application/pdf,text/*"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              className="h-[44px] w-[44px] flex-shrink-0"
+              onClick={() => fileInputRef.current?.click()}
+              title="Attach file"
+            >
+              <Paperclip className="w-4 h-4" />
+            </Button>
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button

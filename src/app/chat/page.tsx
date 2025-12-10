@@ -2,14 +2,17 @@ import { ChatInterface } from '@/components/chat-interface';
 import { chatWithAI } from '@/ai/flows/chat';
 import { generateImage } from '@/ai/flows/image-generation';
 
-async function handleSendMessage(message: string): Promise<string> {
+async function handleSendMessage(message: string, attachment?: { base64: string; mimeType: string }): Promise<string> {
   'use server';
   
   try {
-    const result = await chatWithAI({ message });
+    const result = await chatWithAI({ message, attachment });
     return result.response;
   } catch (error) {
     console.error('Error in chat:', error);
+    if (error instanceof Error && error.message.includes('429')) {
+      return "I'm currently experiencing high traffic (Rate Limit Exceeded). Please try again in a minute.";
+    }
     return "I'm sorry, I'm having trouble responding right now. Please try again in a moment.";
   }
 }

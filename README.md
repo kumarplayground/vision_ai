@@ -4,7 +4,7 @@ A Next.js application for AI education, career guidance, and job opportunities -
 
 ## Features
 
-- 🤖 **AI Chat Assistant**: Powered by ModelsLab's gpt-oss-120b model for intelligent conversations
+- 🤖 **AI Chat Assistant**: Powered by Google Gemini API for intelligent conversations
 - 💼 **Job Listings**: Browse and explore AI-related job opportunities
 - 📚 **Course Catalog**: Discover AI and technology courses
 - 🎯 **Career Guidance**: Get personalized AI career advice
@@ -13,7 +13,7 @@ A Next.js application for AI education, career guidance, and job opportunities -
 ## Tech Stack
 
 - **Framework**: Next.js 15.3.3 (App Router)
-- **AI Model**: ModelsLab gpt-oss-120b
+- **AI Model**: Google Gemini Flash
 - **Database**: MongoDB with Mongoose
 - **Styling**: Tailwind CSS
 - **UI Components**: Radix UI + shadcn/ui
@@ -25,7 +25,7 @@ A Next.js application for AI education, career guidance, and job opportunities -
 
 - Node.js 18+ 
 - MongoDB instance
-- ModelsLab API key
+- Google Gemini API key
 
 ### Installation
 
@@ -43,7 +43,7 @@ npm install
 3. Configure environment variables:
 Create a `.env.local` file in the root directory:
 ```env
-MODELSLAB_API_KEY=your_modelslab_api_key_here
+GEMINI_API_KEY=your_gemini_api_key_here
 MONGODB_URI=your_mongodb_uri_here
 NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=your_preset_here
 ```
@@ -65,23 +65,21 @@ src/
 │   ├── courses/      # Course catalog
 │   └── admin/        # Admin panel
 ├── components/       # React components
-├── ai/               # AI integration (ModelsLab)
+├── ai/               # AI integration (Gemini)
 ├── lib/              # Utilities and database
 └── models/           # MongoDB models
 ```
 
 ## AI Chat Integration
 
-The platform uses ModelsLab's gpt-oss-120b model for the AI chat assistant. The integration is located in `src/ai/flows/chat.ts`.
+The platform uses Google Gemini API for the AI chat assistant. The integration is located in `src/ai/flows/chat.ts`.
 
 ### API Configuration
 
 ```typescript
-const endpointUrl = 'https://modelslab.com/api/v7/llm/chat/completions';
+const endpointUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
 const requestBody = {
-  key: process.env.MODELSLAB_API_KEY,
-  model_id: 'gpt-oss-120b',
-  messages: [...]
+  contents: [{ parts: [{ text: "..." }] }]
 };
 ```
 

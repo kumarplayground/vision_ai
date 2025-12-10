@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server'
  
 const AUTH_COOKIE_NAME = 'admin_auth';
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   const isAuthenticated = request.cookies.has(AUTH_COOKIE_NAME);
  
