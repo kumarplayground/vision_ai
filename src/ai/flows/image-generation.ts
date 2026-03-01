@@ -1,5 +1,7 @@
 'use server';
 
+import { generateImageWithFreepik } from '@/ai/flows/freepik-image-generation';
+
 interface ImageGenerationInput {
   prompt: string;
 }
@@ -9,56 +11,68 @@ interface ImageGenerationOutput {
   status: string;
 }
 
-export async function generateImage(input: ImageGenerationInput): Promise<ImageGenerationOutput> {
+async function generateImageWithModelsLab(input: ImageGenerationInput): Promise<ImageGenerationOutput> {
   const endpointUrl = 'https://modelslab.com/api/v7/images/text-to-image';
-  
-  // Use the key provided by the user or from env
-  const apiKey = process.env.MODELSLAB_API_KEY || 'COsrqkYCDBMx1Iwk6bEjlWGEyX9EkKG4HmbCuKyLwZlurrbczK3upUimGPhn';
-  
+  const apiKey = process.env.MODELSLAB_API_KEY;
+
+  if (!apiKey) {
+    throw new Error('ModelsLab API key is not configured (MODELSLAB_API_KEY)');
+  }
+
   const requestBody = {
-    "prompt": input.prompt,
-    "model_id": "nano-banana-pro",
-    "aspect_ratio": "1:1",
-    "key": apiKey
+    prompt: input.prompt,
+    model_id: 'nano-banana-pro',
+    aspect_ratio: '1:1',
+    key: apiKey,
   };
 
+  const response = await fetch(endpointUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(requestBody),
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    let errorResult: any;
+    try {
+      errorResult = await response.json();
+    } catch {
+      errorResult = { error: { message: await response.text() } };
+    }
+    throw new Error(
+      `API Error (${response.status}): ${errorResult.error?.message || response.statusText || 'Unknown error'}`
+    );
+  }
+
+  const result = await response.json();
+
+  if (result?.output && Array.isArray(result.output) && result.output.length > 0) {
+    return {
+      imageUrl: result.output[0],
+      status: 'success',
+    };
+  }
+
+  throw new Error('No image URL in response');
+}
+
+export async function generateImage(input: ImageGenerationInput): Promise<ImageGenerationOutput> {
   try {
-    const response = await fetch(endpointUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody)
-    });
-
-    if (!response.ok) {
-      let errorResult;
-      try {
-        errorResult = await response.json();
-      } catch (e) {
-        errorResult = { error: { message: await response.text() } };
-      }
-      throw new Error(`API Error (${response.status}): ${errorResult.error?.message || response.statusText || 'Unknown error'}`);
+    // Default provider: Freepik
+    if (process.env.FREEPIK_API_KEY) {
+      const freepik = await generateImageWithFreepik({ prompt: input.prompt });
+      return { imageUrl: freepik.imageUrl, status: freepik.status };
     }
 
-    const result = await response.json();
-    
-    // The API response structure usually contains the image URL in 'output' array
-    // Based on typical ModelsLab/Stable Diffusion API responses
-    if (result.status === 'success' && result.output && result.output.length > 0) {
-        return {
-            imageUrl: result.output[0],
-            status: 'success'
-        };
-    } else if (result.output && result.output.length > 0) {
-         // Sometimes status might be different but output is there
-         return {
-            imageUrl: result.output[0],
-            status: 'success'
-        };
+    // Fallback provider: ModelsLab (only if explicitly configured)
+    if (process.env.MODELSLAB_API_KEY) {
+      return await generateImageWithModelsLab(input);
     }
-    
-    throw new Error('No image URL in response');
+
+    throw new Error('No image generation API key configured (set FREEPIK_API_KEY or MODELSLAB_API_KEY)');
 
   } catch (error) {
     console.error('Error generating image:', error);

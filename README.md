@@ -46,6 +46,7 @@ Create a `.env.local` file in the root directory:
 GEMINI_API_KEY=your_gemini_api_key_here
 MONGODB_URI=your_mongodb_uri_here
 NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=your_preset_here
+FREEPIK_API_KEY=your_freepik_api_key_here
 ```
 
 4. Run the development server:
