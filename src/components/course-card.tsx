@@ -27,7 +27,7 @@ export function CourseCard({ course }: CourseCardProps) {
             src={course.thumbnail}
             alt={course.title}
             layout="fill"
-            objectFit="cover"
+            style={{ objectFit: 'cover' }}
             data-ai-hint="online course"
           />
         </div>

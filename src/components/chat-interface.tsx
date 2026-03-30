@@ -1,10 +1,11 @@
 'use client';
-
+import { voiceSession } from "@/services/voiceSession";
+import { voicePlayer } from "@/services/voicePlayer";
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Send, Bot, User, History, Plus, Trash2, Menu, X, Brain, Image as ImageIcon, Paperclip } from 'lucide-react';
+import { Send, Bot, User, History, Plus, Trash2, Menu, X, Brain, Image as ImageIcon, Paperclip, Mic } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   DropdownMenu,
@@ -16,6 +17,12 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import 'highlight.js/styles/github-dark.css';
+
+
+
+
+
+
 
 interface Message {
   id: string;
@@ -80,11 +87,70 @@ export function ChatInterface({
   const [isImageMode, setIsImageMode] = useState(false);
   const [userMemory, setUserMemory] = useState<UserMemory>({});
   const [attachment, setAttachment] = useState<{ file: File; preview: string; base64: string; mimeType: string } | null>(null);
+  const [isVoiceMode, setIsVoiceMode] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const hasSentInitialMessage = useRef(false);
+
+  const stopGeneration = useRef(false);
+
+  const handleStop = () => {
+    stopGeneration.current = true;
+    setIsLoading(false);
+  };  
+
+  const startVoiceSession = async () => {
+
+  if (isLoading) return;
+
+  try{
+
+    console.log("Voice session started");
+
+    voicePlayer.stop();
+
+    setIsVoiceMode(true);
+
+    await voiceSession.start();
+
+  }
+  catch(error){
+
+    console.error("Voice start error:",error);
+
+    setIsVoiceMode(false);
+
+  }
+
+};
+
+const stopVoiceSession = async () => {
+
+  try{
+
+    console.log("Voice session stopped");
+
+    setIsVoiceMode(false);
+
+    await voiceSession.stop(
+
+      (text)=>sendMessage(text,false),
+
+      (text)=>setInput(text)
+
+    );
+
+  }
+  catch(error){
+
+    console.error("Voice stop error:",error);
+
+  }
+
+};
+   
 
   // Load sessions from localStorage on mount
   useEffect(() => {
@@ -150,10 +216,15 @@ export function ChatInterface({
     return message.length > 30 ? message.substring(0, 30) + '...' : message;
   };
 
+  // Simple unique ID generator
+  function generateUniqueId() {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
+  }
+
   // Create new chat session
   const createNewSession = () => {
     const newSession: ChatSession = {
-      id: Date.now().toString(),
+      id: generateUniqueId(),
       title: 'New Chat',
       messages: [],
       createdAt: new Date(),
@@ -322,13 +393,16 @@ export function ChatInterface({
     }
   };
 
-  const sendMessage = async (text: string, isImage: boolean) => {
-    if (!text.trim() || isLoading) return;
+  const sendMessage = async (text: string, isImage: boolean): Promise<string> => {
+
+    stopGeneration.current = false;
+
+    if (!text.trim() || isLoading) return "";
 
     // Create new session if none exists
     if (!currentSessionId) {
       const newSession: ChatSession = {
-        id: Date.now().toString(),
+        id: generateUniqueId(),
         title: 'New Chat',
         messages: [],
         createdAt: new Date(),
@@ -341,7 +415,7 @@ export function ChatInterface({
     const currentAttachment = attachment;
 
     const userMessage: Message = {
-      id: Date.now().toString(),
+      id: generateUniqueId(),
       content: text.trim(),
       role: 'user',
       timestamp: new Date(),
@@ -367,7 +441,7 @@ export function ChatInterface({
     // Determine active session ID
     let activeSessionId = currentSessionId;
     if (!activeSessionId) {
-      activeSessionId = Date.now().toString();
+      activeSessionId = generateUniqueId();
       setCurrentSessionId(activeSessionId);
       
       // Create new session immediately
@@ -389,7 +463,11 @@ export function ChatInterface({
 
       if (isImage && onGenerateImage) {
         const imageUrl = await onGenerateImage(text.trim());
+
+        if (stopGeneration.current) return "";
+
         response = `![Generated Image](${imageUrl})`;
+
       } else {
         // Call the onSendMessage function if provided
         const memoryContext = buildMemoryContext();
@@ -398,10 +476,18 @@ export function ChatInterface({
         response = onSendMessage 
           ? await onSendMessage(text.trim() + (memoryContext ? `\n\n[Context: ${memoryContext}]` : ''), attachmentData)
           : "I'm a demo chat interface. Please connect me to an AI service to provide real responses.";
+
+          if (stopGeneration.current) return "";
+
+      }
+
+      if (stopGeneration.current) {
+        setIsLoading(false);
+        return "";
       }
 
       const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
+        id: generateUniqueId(),
         content: response,
         role: 'assistant',
         timestamp: new Date(),
@@ -417,10 +503,13 @@ export function ChatInterface({
       
       // Update memory from this conversation
       updateMemoryFromMessage(text.trim(), response);
+
+      return response;
+      
     } catch (error) {
       console.error('Error sending message:', error);
       const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
+        id: generateUniqueId(),
         content: "Sorry, I encountered an error. Please try again.",
         role: 'assistant',
         timestamp: new Date(),
@@ -431,9 +520,15 @@ export function ChatInterface({
       if (activeSessionId) {
         updateSessionMessages(activeSessionId, finalMessages);
       }
+      return "Error";
+
     } finally {
       setIsLoading(false);
     }
+
+    return "";
+
+    
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -447,7 +542,8 @@ export function ChatInterface({
       hasSentInitialMessage.current = true;
       sendMessage(initialMessage, false);
     }
-  }, [initialMessage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once on mount
 
   const hasMessages = messages.length > 0;
 
@@ -708,7 +804,7 @@ export function ChatInterface({
               ))}
               
               {isLoading && (
-                <div className="flex gap-3 justify-start">
+                <div className="flex gap-3 justify-start items-center">
                   <Avatar className="w-8 h-8 mt-1">
                     <AvatarImage src="/ai-avatar.png" />
                     <AvatarFallback>
@@ -799,7 +895,7 @@ export function ChatInterface({
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder={isImageMode ? "Describe the image you want to generate..." : placeholder}
-              disabled={isLoading}
+              disabled={false}
               className={cn(
                 "flex-1 min-h-[44px] resize-none",
                 isImageMode && "border-purple-600 focus-visible:ring-purple-600"
@@ -811,20 +907,53 @@ export function ChatInterface({
                 }
               }}
             />
-            <Button 
-              type="submit" 
-              disabled={!input.trim() || isLoading}
+            <Button
+              type={isLoading ? "button" : "submit"}
+              disabled={!input.trim() && !isLoading}
               size="icon"
+              onClick={isLoading ? handleStop : undefined}
               className={cn(
                 "h-[44px] w-[44px]",
-                isImageMode && "bg-purple-600 hover:bg-purple-700"
+                isLoading && "bg-red-500 hover:bg-red-600",
+                isImageMode && !isLoading && "bg-purple-600 hover:bg-purple-700"
               )}
             >
-              <Send className="w-4 h-4" />
+
+              {isLoading ? (
+                <div className="w-4 h-4 bg-white rounded-sm" />
+              ) : (
+                <Send className="w-4 h-4" />
+              )}
+
             </Button>
+            <Button
+            type="button"
+            size="icon"
+            variant={isVoiceMode ? "default" : "outline"}
+            onClick={
+              isVoiceMode
+              ? stopVoiceSession
+              : startVoiceSession
+            }
+            className={cn(
+              "h-[44px] w-[44px] transition-all",
+              isVoiceMode && "bg-red-600 hover:bg-red-700 animate-pulse"
+            )}
+            title="Live Voice"
+          >
+
+            <Mic className="w-4 h-4"/>
+
+          </Button>
           </form>
           <p className="text-xs text-muted-foreground text-center mt-2">
-            {isImageMode ? 'Enter a detailed prompt to generate an image' : 'Press Enter to send, Shift + Enter for new line'}
+
+            {isVoiceMode 
+              ? "🎤 Recording... click mic again to stop"
+              : isImageMode 
+                ? "Enter a detailed prompt to generate an image"
+                : "Press Enter to send, Shift + Enter for new line"
+            }
           </p>
         </div>
       </div>
