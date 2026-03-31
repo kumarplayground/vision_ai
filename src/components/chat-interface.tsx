@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Send, Bot, User, History, Plus, Trash2, Menu, X, Brain, Image as ImageIcon, Paperclip } from 'lucide-react';
+import { Send, Bot, User, History, Plus, Trash2, Menu, X, Brain, Image as ImageIcon, Paperclip, Download } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   DropdownMenu,
@@ -85,6 +85,52 @@ export function ChatInterface({
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const hasSentInitialMessage = useRef(false);
+
+  const sanitizeFilename = (value: string) => {
+    const trimmed = value.trim();
+    const cleaned = trimmed
+      .replace(/[\\/:*?"<>|]+/g, '-')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+    return cleaned || 'image';
+  };
+
+  const downloadImage = async (url: string, filenameBase?: string) => {
+    try {
+      const isBlobOrData = url.startsWith('blob:') || url.startsWith('data:');
+      const safeBase = sanitizeFilename(filenameBase || 'image');
+
+      const downloadUrl = isBlobOrData
+        ? url
+        : `/api/download-image?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(`${safeBase}-${Date.now()}`)}`;
+
+      const response = await fetch(downloadUrl, { cache: 'no-store' });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      const blob = await response.blob();
+      const mime = blob.type || '';
+      const ext =
+        mime.includes('png') ? 'png' :
+        mime.includes('webp') ? 'webp' :
+        mime.includes('jpeg') || mime.includes('jpg') ? 'jpg' :
+        'jpg';
+      const filename = `${safeBase}-${Date.now()}.${ext}`;
+      const objectUrl = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = objectUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(objectUrl);
+    } catch (e) {
+      // If proxy blocks the host or upstream fails, fall back to opening.
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  };
 
   // Load sessions from localStorage on mount
   useEffect(() => {
@@ -629,11 +675,24 @@ export function ChatInterface({
                     {message.attachment && (
                       <div className="mb-2">
                         {message.attachment.type === 'image' ? (
-                          <img 
-                            src={message.attachment.preview} 
-                            alt="Attachment" 
-                            className="max-w-full rounded-lg max-h-60 object-cover"
-                          />
+                          <div className="group relative inline-block max-w-full">
+                            <img 
+                              src={message.attachment.preview} 
+                              alt={message.attachment.name || 'Attachment'} 
+                              className="max-w-full rounded-lg max-h-60 object-cover"
+                            />
+                            <Button
+                              type="button"
+                              variant="secondary"
+                              size="icon"
+                              className="absolute right-2 top-2 h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100"
+                              onClick={() => downloadImage(message.attachment!.preview, message.attachment?.name || 'attachment')}
+                              aria-label="Download image"
+                              title="Download"
+                            >
+                              <Download className="h-4 w-4" />
+                            </Button>
+                          </div>
                         ) : (
                           <div className="flex items-center gap-2 p-2 bg-black/10 rounded-lg">
                             <Paperclip className="w-4 h-4" />
@@ -652,6 +711,30 @@ export function ChatInterface({
                           remarkPlugins={[remarkGfm]}
                           rehypePlugins={[rehypeHighlight]}
                           components={{
+                            img({ src, alt, ...props }: any) {
+                              if (!src) return null;
+                              return (
+                                <span className="group relative inline-block max-w-full my-2">
+                                  <img
+                                    src={src}
+                                    alt={alt || 'Image'}
+                                    className="max-w-full rounded-lg"
+                                    {...props}
+                                  />
+                                  <Button
+                                    type="button"
+                                    variant="secondary"
+                                    size="icon"
+                                    className="absolute right-2 top-2 h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100"
+                                    onClick={() => downloadImage(src, alt || 'image')}
+                                    aria-label="Download image"
+                                    title="Download"
+                                  >
+                                    <Download className="h-4 w-4" />
+                                  </Button>
+                                </span>
+                              );
+                            },
                             code({ node, inline, className, children, ...props }: any) {
                               return inline ? (
                                 <code className={cn("px-1 py-0.5 rounded bg-muted text-sm", className)} {...props}>

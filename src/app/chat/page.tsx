@@ -25,7 +25,8 @@ async function handleGenerateImage(prompt: string): Promise<string> {
     return result.imageUrl;
   } catch (error) {
     console.error('Error generating image:', error);
-    throw new Error("Failed to generate image. Please try again.");
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    throw new Error(`Failed to generate image: ${message}`);
   }
 }
 
